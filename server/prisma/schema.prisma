@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+// Modelo para Pacientes
+model Paciente {
+  id        String   @id @default(cuid())
+  nombre    String
+  dni       String   @unique
+  telefono  String
+  citas     Cita[]
+  createdAt DateTime @default(now())
+
+  @@map("pacientes")
+}
+
+// Modelo para Administradores
+model Administrador {
+  id           String   @id @default(cuid())
+  nombre       String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  @@map("administradores")
+}
+
+// Modelo para Especialidades
+model Especialidad {
+  id      String   @id @default(cuid())
+  nombre  String   @unique
+  medicos Medico[]
+
+  @@map("especialidades")
+}
+
+// Modelo para Médicos
+model Medico {
+  id            String        @id @default(cuid())
+  nombre        String
+  email         String
+  especialidades Especialidad[]
+  horarios      Horario[]
+  createdAt     DateTime      @default(now())
+
+  @@map("medicos")
+}
+
+// Modelo para Horarios
+model Horario {
+  id         String   @id @default(cuid())
+  medicoId   String
+  medico     Medico   @relation(fields: [medicoId], references: [id], onDelete: Cascade)
+  diaSemana  DiaSemana
+  horaInicio String
+  horaFin    String
+  cupos      Int
+  citas      Cita[]
+  createdAt  DateTime @default(now())
+
+  @@map("horarios")
+}
+
+// Modelo para Citas
+model Cita {
+  id        String      @id @default(cuid())
+  pacienteId String
+  paciente  Paciente    @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+  horarioId String
+  horario   Horario     @relation(fields: [horarioId], references: [id], onDelete: Cascade)
+  fecha     DateTime
+  estado    EstadoCita
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("citas")
+}
+
+// Enumeraciones
+enum DiaSemana {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+}
+
+enum EstadoCita {
+  ACTIVA
+  CANCELADA
+  REPROGRAMADA
+}
