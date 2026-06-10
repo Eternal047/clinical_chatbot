@@ -1,9 +1,15 @@
 import dialogflow from "@google-cloud/dialogflow";
 import config from "../config/env.js";
 
-const projectId = config.dialogflow.projectId;
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+
+const projectId = credentials.project_id;
+
 const sessionClient = new dialogflow.SessionsClient({
-  keyFilename: config.dialogflow.credentialsPath,
+  credentials: {
+    client_email: credentials.client_email,
+    private_key: credentials.private_key,
+  },
 });
 
 export const detectIntentService = async (mensaje, telefonoUsuario) => {

@@ -5,8 +5,7 @@ dotenv.config();
 // Variables requeridas
 const requiredVars = [
   "DATABASE_URL",
-  "DIALOGFLOW_PROJECT_ID",
-  "GOOGLE_APPLICATION_CREDENTIALS",
+  "GOOGLE_CREDENTIALS_JSON",
   "TWILIO_ACCOUNT_SID",
   "TWILIO_AUTH_TOKEN",
   "TWILIO_WHATSAPP_NUMBER",
@@ -28,10 +27,6 @@ if (missingVars.length > 0) {
 const config = {
   database: {
     url: process.env.DATABASE_URL,
-  },
-  dialogflow: {
-    projectId: process.env.DIALOGFLOW_PROJECT_ID,
-    credentialsPath: process.env.GOOGLE_APPLICATION_CREDENTIALS,
   },
   twilio: {
     accountSid: process.env.TWILIO_ACCOUNT_SID,
