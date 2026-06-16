@@ -1,8 +1,6 @@
 import dialogflow from "@google-cloud/dialogflow";
-import config from "../config/env.js";
 
 const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-
 const projectId = credentials.project_id;
 
 const sessionClient = new dialogflow.SessionsClient({
@@ -12,44 +10,30 @@ const sessionClient = new dialogflow.SessionsClient({
   },
 });
 
-export const detectIntentService = async (mensaje, telefonoUsuario) => {
-  console.log("Session ID usado:", telefonoUsuario);
-  try {
-    const sessionPath = sessionClient.projectAgentSessionPath(
-      projectId,
-      telefonoUsuario,
-    );
+export const detectIntentService = async (sessionId, text, languageCode = "es") => {
+  // Limpiar sessionId de caracteres no permitidos
+  const cleanSessionId = sessionId.replace(/[^a-zA-Z0-9_-]/g, '');
+  
+  const sessionPath = sessionClient.projectAgentSessionPath(projectId, cleanSessionId);
 
-    const request = {
-      session: sessionPath,
-      queryInput: {
-        text: {
-          text: mensaje,
-          languageCode: "es",
-        },
+  const request = {
+    session: sessionPath,
+    queryInput: {
+      text: {
+        text: text.trim(),
+        languageCode,
       },
-    };
+    },
+  };
 
-    const responses = await sessionClient.detectIntent(request);
-    const result = responses[0].queryResult;
-    console.log("RAW parameters:", JSON.stringify(result.parameters.fields, null, 2));
-    
-    return {
-      intent: result.intent.displayName,
-      parameters: result.parameters.fields
-        ? Object.entries(result.parameters.fields).reduce(
-            (acc, [key, value]) => {
-              acc[key] = value.stringValue || value.numberValue;
-              return acc;
-            },
-            {},
-          )
-        : {},
-      fulfillmentText: result.fulfillmentText,
-      confidence: result.intentDetectionConfidence,
-    };
-  } catch (error) {
-    console.error("Error en detectIntentService:", error);
-    throw error;
-  }
+  const [response] = await sessionClient.detectIntent(request);
+  const result = response.queryResult;
+
+  return {
+    intent: result.intent?.displayName || 'Desconocido',
+    parameters: result.parameters?.fields || {},
+    allRequiredParamsPresent: result.allRequiredParamsPresent,
+    fulfillmentText: result.fulfillmentText || '',
+    outputContexts: result.outputContexts || [],
+  };
 };

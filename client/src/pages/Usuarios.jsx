@@ -6,7 +6,6 @@ const Usuarios = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Cargar usuarios al montar
   useEffect(() => {
     cargarUsuarios();
   }, []);
@@ -14,8 +13,28 @@ const Usuarios = () => {
   const cargarUsuarios = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/api/pacientes");
-      setUsuarios(response.data.data || []);
+      const response = await api.get("/api/citas");
+      const citas = response.data.data || [];
+      const pacientesPorDni = new Map();
+
+      citas.forEach((cita) => {
+        if (!cita.pacienteDni) {
+          return;
+        }
+
+        const existente = pacientesPorDni.get(cita.pacienteDni);
+        pacientesPorDni.set(cita.pacienteDni, {
+          dni: cita.pacienteDni,
+          nombre: cita.pacienteNombre,
+          telefono: cita.pacienteTelef,
+          citas: (existente?.citas || 0) + 1,
+        });
+      });
+
+      setUsuarios(Array.from(pacientesPorDni.values()));
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al cargar usuarios");
     } finally {
       setLoading(false);
     }
@@ -27,7 +46,7 @@ const Usuarios = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Gestión de Usuarios (Pacientes)</h1>
+      <h1>Usuarios con Citas</h1>
 
       {error && (
         <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>
@@ -69,25 +88,34 @@ const Usuarios = () => {
             >
               Teléfono
             </th>
+            <th
+              style={{
+                border: "1px solid #ddd",
+                padding: "10px",
+                textAlign: "center",
+              }}
+            >
+              Citas
+            </th>
           </tr>
         </thead>
         <tbody>
           {usuarios.length === 0 ? (
             <tr>
               <td
-                colSpan="3"
+                colSpan="4"
                 style={{
                   border: "1px solid #ddd",
                   padding: "10px",
                   textAlign: "center",
                 }}
               >
-                No hay usuarios registrados
+                No hay usuarios con citas registradas
               </td>
             </tr>
           ) : (
             usuarios.map((usuario) => (
-              <tr key={usuario.id}>
+              <tr key={usuario.dni}>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                   {usuario.nombre}
                 </td>
@@ -96,6 +124,15 @@ const Usuarios = () => {
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                   {usuario.telefono}
+                </td>
+                <td
+                  style={{
+                    border: "1px solid #ddd",
+                    padding: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  {usuario.citas}
                 </td>
               </tr>
             ))

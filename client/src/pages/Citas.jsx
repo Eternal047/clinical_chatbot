@@ -6,7 +6,6 @@ const Citas = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Cargar citas al montar
   useEffect(() => {
     cargarCitas();
   }, []);
@@ -79,6 +78,15 @@ const Citas = () => {
                 textAlign: "left",
               }}
             >
+              DNI
+            </th>
+            <th
+              style={{
+                border: "1px solid #ddd",
+                padding: "10px",
+                textAlign: "left",
+              }}
+            >
               Teléfono
             </th>
             <th
@@ -89,6 +97,15 @@ const Citas = () => {
               }}
             >
               Fecha
+            </th>
+            <th
+              style={{
+                border: "1px solid #ddd",
+                padding: "10px",
+                textAlign: "left",
+              }}
+            >
+              Día
             </th>
             <th
               style={{
@@ -132,7 +149,7 @@ const Citas = () => {
           {citas.length === 0 ? (
             <tr>
               <td
-                colSpan="7"
+                colSpan="9"
                 style={{
                   border: "1px solid #ddd",
                   padding: "10px",
@@ -146,19 +163,27 @@ const Citas = () => {
             citas.map((cita) => (
               <tr key={cita.id}>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {cita.paciente.nombre}
+                  {cita.pacienteNombre}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {cita.paciente.telefono}
+                  {cita.pacienteDni}
+                </td>
+                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
+                  {cita.pacienteTelef}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                   {formatearFecha(cita.fecha)}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {cita.horario.horaInicio} - {cita.horario.horaFin}
+                  {cita.horario?.diaSemana || "N/A"}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {cita.horario.medico.nombre}
+                  {cita.horario
+                    ? `${cita.horario.horaInicio} - ${cita.horario.horaFin}`
+                    : "N/A"}
+                </td>
+                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
+                  {cita.horario?.medico?.nombre || "N/A"}
                 </td>
                 <td style={{ border: "1px solid #ddd", padding: "10px" }}>
                   <span

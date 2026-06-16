@@ -1,33 +1,20 @@
 import express from "express";
-import {
-  createCita,
-  getAllCitas,
-  getCitaById,
-  getCitasByDni,
-  cancelarCita,
-  reprogramarCita,
-} from "../controllers/citasController.js";
+import { createCita, getCitaById } from "../controllers/citasController.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import { rolesMiddleware } from "../middlewares/roles.middleware.js";
+// rolesMiddleware no se usa por ahora, pero se puede dejar importado si se prevé usar luego
 
 const router = express.Router();
 
-// POST /api/citas
+// POST /api/citas - Crear una cita (accesible para usuarios autenticados)
 router.post("/", authMiddleware, createCita);
 
-// GET /api/citas (solo ADMIN)
-router.get("/", authMiddleware, rolesMiddleware(["ADMIN"]), getAllCitas);
-
-// GET /api/citas/:id
+// GET /api/citas/:id - Obtener una cita por ID
 router.get("/:id", authMiddleware, getCitaById);
 
-// GET /api/citas/paciente/:dni
-router.get("/paciente/:dni", authMiddleware, getCitasByDni);
-
-// PATCH /api/citas/:id/cancelar
-router.patch("/:id/cancelar", authMiddleware, cancelarCita);
-
-// PATCH /api/citas/:id/reprogramar
-router.patch("/:id/reprogramar", authMiddleware, reprogramarCita);
+// Las siguientes rutas quedan pendientes de implementación cuando los servicios estén listos:
+// GET /api/citas (solo ADMIN) -> getAllCitas
+// GET /api/citas/paciente/:dni -> getCitasByDni
+// PATCH /api/citas/:id/cancelar -> cancelarCita
+// PATCH /api/citas/:id/reprogramar -> reprogramarCita
 
 export default router;

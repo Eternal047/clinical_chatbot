@@ -7,8 +7,8 @@ import horariosRoutes from "./api/routes/horariosRoutes.js";
 import medicosRoutes from "./api/routes/medicosRoutes.js";
 import pacientesRoutes from "./api/routes/pacientesRoutes.js";
 import especialidadesRoutes from "./api/routes/especialidadesRoutes.js";
+import { handleIncomingMessage } from './chatbot/twilio.service.js';
 import { handleWebhook } from "./chatbot/webhook.controller.js";
-
 const app = express();
 
 // Middleware
@@ -29,8 +29,8 @@ app.use("/api/medicos", medicosRoutes);
 app.use("/api/pacientes", pacientesRoutes);
 app.use("/api/especialidades", especialidadesRoutes);
 
-// Chatbot Routes
-app.post("/chatbot/webhook", handleWebhook);
+app.post("/chatbot/whatsapp", handleIncomingMessage); // Ruta específica para Twilio
+app.post("/chatbot/webhook", handleWebhook);           
 
 // 404 Handler
 app.use((req, res) => {
