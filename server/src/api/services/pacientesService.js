@@ -1,55 +1,36 @@
-import prisma from "../../config/prisma.js";
+import {
+  obtenerCitasPorDni,
+  obtenerPacientesDesdeCitas,
+} from "./citasService.js";
 
 export const getAllPacientesService = async () => {
-  const pacientes = await prisma.paciente.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-
-  return pacientes;
+  return obtenerPacientesDesdeCitas();
 };
 
 export const getPacienteByIdService = async (id) => {
-  const paciente = await prisma.paciente.findUnique({
-    where: { id },
-    include: {
-      citas: {
-        include: {
-          horario: {
-            include: {
-              medico: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const pacientes = await obtenerPacientesDesdeCitas();
+  const paciente = pacientes.find((item) => item.id === id || item.dni === id);
 
   if (!paciente) {
     throw new Error("Paciente no encontrado");
   }
 
-  return paciente;
+  return {
+    ...paciente,
+    citas: await obtenerCitasPorDni(paciente.dni),
+  };
 };
 
 export const getPacienteByDniService = async (dni) => {
-  const paciente = await prisma.paciente.findUnique({
-    where: { dni },
-    include: {
-      citas: {
-        include: {
-          horario: {
-            include: {
-              medico: true,
-            },
-          },
-        },
-      },
-    },
-  });
+  const pacientes = await obtenerPacientesDesdeCitas();
+  const paciente = pacientes.find((item) => item.dni === dni);
 
   if (!paciente) {
     throw new Error("Paciente no encontrado");
   }
 
-  return paciente;
+  return {
+    ...paciente,
+    citas: await obtenerCitasPorDni(dni),
+  };
 };

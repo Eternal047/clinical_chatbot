@@ -1,24 +1,27 @@
-import { getAllMedicosService } from "../../api/services/medicosService.js";
+import { obtenerPorEspecialidad } from "../../api/services/medicosService.js";
 
-export default async (parameters) => {
+export default async (parameters = {}) => {
   try {
-    const { especialidad } = parameters;
-    const medicos = await getAllMedicosService(especialidad);
+    const medicos = await obtenerPorEspecialidad(parameters.especialidad);
 
-    if (medicos.length === 0) {
-      return especialidad
-        ? `No encontramos medicos en la especialidad de ${especialidad}.`
-        : "No hay medicos disponibles en este momento.";
+    if (!medicos.length) {
+      return parameters.especialidad
+        ? `No encontramos medicos en la especialidad de ${parameters.especialidad}.`
+        : "No hay medicos registrados en este momento.";
     }
 
-    const listaMedicos = medicos
-      .map((m) => {
-        const espec = m.especialidad?.nombre || "Sin especialidad registrada";
-        return `- Dr/Dra. ${m.nombre}\n  Especialidad: ${espec}`;
+    const lista = medicos
+      .map((medico) => {
+        const horarios = medico.horarios?.length
+          ? medico.horarios
+              .map((horario) => `${horario.diaSemana} ${horario.horaInicio}-${horario.horaFin}`)
+              .join("; ")
+          : "sin horarios registrados";
+        return `- ${medico.nombre} (${medico.especialidad?.nombre || "Sin especialidad"}) - ${horarios}`;
       })
       .join("\n");
 
-    return `Medicos disponibles${especialidad ? ` en ${especialidad}` : ""}:\n\n${listaMedicos}\n\nEscribe "solicitar cita" para agendar.`;
+    return `Medicos disponibles${parameters.especialidad ? ` en ${parameters.especialidad}` : ""}:\n\n${lista}`;
   } catch (error) {
     console.error("Error en consultar_medicos:", error);
     return "Lo siento, ocurrio un error al consultar los medicos.";

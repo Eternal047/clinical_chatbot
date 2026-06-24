@@ -1,35 +1,29 @@
-import { getHorariosDisponiblesService } from "../../api/services/horariosService.js";
+import { obtenerHorariosDisponiblesPorEspecialidad } from "../../api/services/horariosService.js";
 
-export default async (parameters) => {
+export default async (parameters = {}) => {
   try {
-    const { especialidad, fecha } = parameters;
+    const { especialidad } = parameters;
 
     if (!especialidad) {
-      return "Para consultar disponibilidad necesito la especialidad. ¿Cuál especialidad necesitas?";
+      return "Para consultar disponibilidad necesito la especialidad.";
     }
 
-    if (!fecha) {
-      return "Por favor especifica la fecha para la cual deseas consultar disponibilidad.";
+    const horarios = await obtenerHorariosDisponiblesPorEspecialidad(especialidad);
+
+    if (!horarios.length) {
+      return `No hay horarios disponibles para ${especialidad}.`;
     }
 
-    // Obtener horarios disponibles
-    const horarios = await getHorariosDisponiblesService(especialidad, fecha);
-
-    if (horarios.length === 0) {
-      return `No hay horarios disponibles para ${especialidad} en ${fecha}. ¿Te gustaría intentar con otra fecha?`;
-    }
-
-    const listaHorarios = horarios
+    const lista = horarios
       .map(
-        (h) => `- Dr/Dra. ${h.medico.nombre}: ${h.horaInicio} a ${h.horaFin}`,
+        (horario) =>
+          `- Dr/a. ${horario.medico.nombre}: ${horario.diaSemana} ${horario.horaInicio}-${horario.horaFin}`,
       )
       .join("\n");
 
-    return `✅ Horarios disponibles para ${especialidad} en ${fecha}:\n${listaHorarios}
-
-Escribe "solicitar cita" si deseas agendar con alguno de estos médicos.`;
+    return `Horarios disponibles para ${especialidad}:\n${lista}`;
   } catch (error) {
     console.error("Error en consultar_disponibilidad:", error);
-    return "Lo siento, ocurrió un error al consultar disponibilidad.";
+    return "Lo siento, ocurrio un error al consultar disponibilidad.";
   }
 };

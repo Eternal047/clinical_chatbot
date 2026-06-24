@@ -1,0 +1,17 @@
+{
+  "escenario": "ESC-01",
+  "categoria": "Registro de cita",
+  "intencion_esperada": "solicitar_cita",
+  "datos_esperados": {
+    "especialidad": "Cardiología",
+    "pacienteNombre": "Juan Pérez",
+    "pacienteDNI": "47821356",
+    "horarioId": 3
+  },
+  "turnos": [
+    { "turno": 1, "usuario": "Quiero sacar una cita", "bot_esperado": "¿Qué especialidad necesitas?..." },
+    { "turno": 2, "usuario": "Cardiología", "bot_esperado": "Estos son los médicos disponibles:..." }
+  ]
+}
+
+

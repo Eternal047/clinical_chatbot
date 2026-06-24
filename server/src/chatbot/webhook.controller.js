@@ -1,46 +1,84 @@
-﻿import { procesarSolicitarCita } from './intents/solicitar_cita.js';
-import { procesarSeleccionarMedico } from './intents/seleccionar_medico.js';
-import { procesarProporcionarDatos } from './intents/proporcionar_datos.js';
-import { procesarConfirmarCita } from './intents/confirmar_cita.js';
-// Luego agregarás otros: cancelar_cita, reprogramar_cita, etc.
+﻿// src/chatbot/webhook.controller.js
+import { procesarSolicitarCita } from "./intents/solicitar_cita.js";
+import { procesarSeleccionarEspecialidad } from "./intents/seleccionar_especialidad.js";
+import { procesarSeleccionarMedico } from "./intents/seleccionar_medico.js";
+import { procesarProporcionarDatos } from "./intents/proporcionar_datos.js";
+import { procesarConfirmarCita } from "./intents/confirmar_cita.js";
+import { procesarCancelarCita } from "./intents/cancelar_cita.js"; // unificado
+import { procesarReprogramarCita } from "./intents/reprogramar_cita.js";
 
+// Mapeo de intents → handlers
 const intentHandlers = {
-  'solicitar_cita': procesarSolicitarCita,
-  'seleccionar_medico': procesarSeleccionarMedico,
-  'proporcionar_datos': procesarProporcionarDatos,
-  'confirmar_cita': procesarConfirmarCita,
+  solicitar_cita: procesarSolicitarCita,
+  seleccionar_especialidad: procesarSeleccionarEspecialidad,
+  seleccionar_medico: procesarSeleccionarMedico,
+  proporcionar_datos: procesarProporcionarDatos,
+  confirmar_cita: procesarConfirmarCita,
+
+  // Los tres intents de cancelación comparten el mismo handler
+  cancelar_cita: procesarCancelarCita,
+  "cancelar_cita - seleccionar": procesarCancelarCita,
+  "cancelar_cita - confirmar": procesarCancelarCita,
+  // ... otros
+  reprogramar_cita: procesarReprogramarCita,
+  "reprogramar_cita - seleccionar": procesarReprogramarCita,
+  "reprogramar_cita - horario": procesarReprogramarCita,
+  "reprogramar_cita - confirmar": procesarReprogramarCita,
 };
 
-// Extrae el número de teléfono del session (formato: projects/*/agent/sessions/<tel>)
+/**
+ * Extrae el número de teléfono limpio desde el session de Dialogflow.
+ * Ejemplo: "whatsapp:+51961219063" → "961219063"
+ */
 const extraerTelefonoDeSession = (session) => {
-  const parts = session.split('/');
-  return parts[parts.length - 1];
+  const parts = session.split("/");
+  const raw = parts[parts.length - 1]; // "whatsapp:+51961219063"
+  let telefono = raw.replace(/\D/g, ""); // solo dígitos: "51961219063"
+  // Si tiene código de país 51 y más de 9 dígitos, lo quitamos
+  if (telefono.startsWith("51") && telefono.length > 9) {
+    telefono = telefono.substring(2); // "961219063"
+  }
+  return telefono;
 };
 
 export const handleWebhook = async (req, res) => {
-    console.log('🤖 [Webhook] Body recibido:', JSON.stringify(req.body).slice(0, 200));
-  if (!req.body?.queryResult) {
-    console.error('❌ Petición inválida al webhook (no es de Dialogflow)');
-    return res.status(400).send('Bad Request');
-  }
   const { queryResult } = req.body;
   const intentName = queryResult.intent.displayName;
   const handler = intentHandlers[intentName];
 
+  // 🔍 Log de depuración
+  console.log("[Webhook] Intent recibido:", intentName);
+  //console.log('Teléfono extraído:', extraerTelefonoDeSession(req.body.session));
+  console.log("Texto del usuario:", queryResult.queryText);
+  console.log("Parámetros (raw):", queryResult.parameters);
+  //console.log('Todos los parámetros requeridos completos?:', queryResult.allRequiredParamsPresent);
+
   if (!handler) {
-    return res.json({ fulfillmentText: 'No tengo una respuesta para esta solicitud.' });
+    console.warn("⚠️ No se encontró handler para el intent:", intentName);
+    return res.json({
+      fulfillmentText: "No tengo una respuesta para esta solicitud.",
+    });
   }
 
   try {
-    // Inyectamos el número de teléfono en queryResult para que los intents puedan usarlo
+    // Inyectar el número de teléfono limpio en queryResult
     queryResult.telefonoUsuario = extraerTelefonoDeSession(req.body.session);
     const result = await handler(queryResult);
+
+    console.log("✅ Respuesta del handler:", {
+      intent: intentName,
+      text: result.text?.substring(0, 300),
+      contexts: result.contexts?.length || 0,
+    });
+
     return res.json({
       fulfillmentText: result.text,
       outputContexts: result.contexts || [],
     });
   } catch (error) {
-    console.error(`Error en intent ${intentName}:`, error);
-    return res.json({ fulfillmentText: 'Error interno. Por favor inténtalo más tarde.' });
+    console.error(`💥 Error en intent ${intentName}:`, error);
+    return res.json({
+      fulfillmentText: "Error interno. Por favor inténtalo más tarde.",
+    });
   }
 };

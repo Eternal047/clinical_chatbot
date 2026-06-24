@@ -1,21 +1,27 @@
 import prisma from "../../config/prisma.js";
 
-export const getAllEspecialidadesService = async () => {
-  const especialidades = await prisma.especialidad.findMany({
+const especialidadInclude = {
+  medicos: {
     include: {
-      medicos: true,
+      horarios: {
+        orderBy: [{ diaSemana: "asc" }, { horaInicio: "asc" }],
+      },
     },
-  });
+    orderBy: { nombre: "asc" },
+  },
+};
 
-  return especialidades;
+export const getAllEspecialidadesService = async () => {
+  return prisma.especialidad.findMany({
+    include: especialidadInclude,
+    orderBy: { nombre: "asc" },
+  });
 };
 
 export const getEspecialidadByIdService = async (id) => {
   const especialidad = await prisma.especialidad.findUnique({
     where: { id },
-    include: {
-      medicos: true,
-    },
+    include: especialidadInclude,
   });
 
   if (!especialidad) {
@@ -23,4 +29,15 @@ export const getEspecialidadByIdService = async (id) => {
   }
 
   return especialidad;
+};
+
+export const createEspecialidadService = async ({ nombre }) => {
+  if (!nombre) {
+    throw new Error("nombre es requerido");
+  }
+
+  return prisma.especialidad.create({
+    data: { nombre },
+    include: especialidadInclude,
+  });
 };

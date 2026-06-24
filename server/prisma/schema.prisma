@@ -29,10 +29,10 @@ model Medico {
   id             String       @id @default(cuid())
   nombre         String
   email          String       @unique
-  especialidadId String
-  especialidad   Especialidad @relation(fields: [especialidadId], references: [id], onDelete: Restrict)
-  horarios       Horario[]
   createdAt      DateTime     @default(now())
+  especialidadId String
+  horarios       Horario[]
+  especialidad   Especialidad @relation(fields: [especialidadId], references: [id])
 
   @@map("medicos")
 }
@@ -40,28 +40,28 @@ model Medico {
 model Horario {
   id         String    @id @default(cuid())
   medicoId   String
-  medico     Medico    @relation(fields: [medicoId], references: [id], onDelete: Cascade)
   diaSemana  DiaSemana
   horaInicio String
   horaFin    String
   cupos      Int
-  citas      Cita[]
   createdAt  DateTime  @default(now())
+  citas      Cita[]
+  medico     Medico    @relation(fields: [medicoId], references: [id], onDelete: Cascade)
 
   @@map("horarios")
 }
 
 model Cita {
   id             String     @id @default(cuid())
-  pacienteDni    String
-  pacienteNombre String
-  pacienteTelef  String
   horarioId      String
-  horario        Horario    @relation(fields: [horarioId], references: [id], onDelete: Restrict)
   fecha          DateTime
   estado         EstadoCita @default(ACTIVA)
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  pacienteDni    String
+  pacienteNombre String
+  pacienteTelef  String
+  horario        Horario    @relation(fields: [horarioId], references: [id])
 
   @@index([pacienteTelef])
   @@map("citas")

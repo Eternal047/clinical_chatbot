@@ -1,74 +1,53 @@
-import { crearCita } from '../../api/services/citasService.js';
-import { obtenerPorEspecialidad } from '../../api/services/medicosService.js';
-import { obtenerHorariosDisponibles } from '../../api/services/horariosService.js';
+import { crearCita } from "../../api/services/citasService.js";
+import { mostrarMedicos } from "./solicitar_cita.js";
+
+const normalizarConfirmacion = (valor) => {
+  const texto = Array.isArray(valor)
+    ? valor[0]
+    : typeof valor === "string"
+      ? valor
+      : valor?.value || valor?.stringValue || "";
+
+  return String(texto)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+};
+
+const obtenerContexto = (queryResult, nombre) => {
+  return (queryResult.outputContexts || []).find((contexto) =>
+    contexto.name.endsWith(`/contexts/${nombre}`),
+  );
+};
+
+const limpiarContextos = (queryResult) =>
+  (queryResult.outputContexts || []).map((contexto) => ({
+    name: contexto.name,
+    lifespanCount: 0,
+  }));
 
 export const procesarConfirmarCita = async (queryResult) => {
-  // Asegurar que confirmacion sea string (viene de entidad @confirmacion)
-  const confirmacionParam = queryResult.parameters.confirmacion;
-  const confirmacion = typeof confirmacionParam === 'string' 
-                        ? confirmacionParam.toLowerCase() 
-                        : (confirmacionParam?.value || '').toLowerCase();
+  const confirmacion = normalizarConfirmacion(queryResult.parameters?.confirmacion);
+  const contextoConfirmacion = obtenerContexto(queryResult, "awaiting_confirmacion");
+  const contextParams = contextoConfirmacion?.parameters || {};
 
-  const contextParams = queryResult.outputContexts?.[0]?.parameters || {};
+  if (confirmacion === "no") {
+    return mostrarMedicos(contextParams.especialidad, contextParams.telefono, queryResult);
+  }
 
-  if (confirmacion === 'no') {
-    // Volver a mostrar opciones disponibles
-    const especialidad = contextParams.especialidad;
-    const telefono = contextParams.telefono;
-
-    const medicos = await obtenerPorEspecialidad(especialidad);
-    const opciones = [];
-    for (const medico of medicos) {
-      const horarios = await obtenerHorariosDisponibles(medico.id);
-      for (const horario of horarios) {
-        opciones.push({
-          horarioId: horario.id,
-          medicoId: medico.id,
-          nombreMedico: medico.nombre,
-          dia: horario.diaSemana,
-          horaInicio: horario.horaInicio,
-          horaFin: horario.horaFin,
-        });
-      }
-    }
-
-    let respuesta = `De acuerdo. Volvamos a elegir.\n\n📋 *Horarios disponibles en ${especialidad}:*\n\n`;
-    opciones.forEach((op, i) => {
-      respuesta += `${i + 1}. Dr/a. ${op.nombreMedico} - ${op.dia} ${op.horaInicio}-${op.horaFin}\n`;
-    });
-    respuesta += '\nResponde con el *número* del horario.';
-
-    const baseSession = queryResult.outputContexts?.[0]?.name?.split('/contexts/')[0] || '';
-    const contextName = `${baseSession}/contexts/awaiting_medico_selection`;
-
+  if (confirmacion !== "si") {
     return {
-      text: respuesta,
-      contexts: [{
-        name: contextName,
-        lifespanCount: 5,
-        parameters: {
-          especialidad,
-          opciones: JSON.stringify(opciones),
-          telefono,
-        },
-      }],
+      text: "No entendi la confirmacion. Responde Si o No.",
+      contexts: queryResult.outputContexts || [],
     };
   }
 
-  // Confirmación positiva
-  // Extraer y limpiar valores del contexto
-  const horarioId = contextParams.horarioId;
-  const nombre_paciente = typeof contextParams.nombre_paciente === 'object' && contextParams.nombre_paciente.name
-                          ? String(contextParams.nombre_paciente.name)
-                          : String(contextParams.nombre_paciente || '').trim();
-  const dni_paciente = String(contextParams.dni_paciente || '').trim();
-  const telefono = contextParams.telefono;
+  const { horarioId, nombre_paciente, dni_paciente, telefono } = contextParams;
 
-  // Validación extra por si acaso
   if (!horarioId || !nombre_paciente || !dni_paciente || !telefono) {
     return {
-      text: 'Faltan datos para confirmar la cita. Por favor, inicia de nuevo.',
-      contexts: [],
+      text: "Faltan datos para confirmar la cita. Por favor, inicia de nuevo.",
+      contexts: limpiarContextos(queryResult),
     };
   }
 
@@ -81,14 +60,14 @@ export const procesarConfirmarCita = async (queryResult) => {
     });
 
     return {
-      text: `✅ ¡Cita registrada con éxito!\nN° de referencia: ${cita.id}\nGracias por usar nuestro servicio.`,
-      contexts: [], // cerrar todos los contextos
+      text: `Cita registrada con exito. Numero de referencia: ${cita.id}.`,
+      contexts: limpiarContextos(queryResult),
     };
   } catch (error) {
-    console.error('Error al guardar cita:', error);
+    console.error("Error al guardar cita:", error);
     return {
-      text: 'Ocurrió un error al registrar la cita. Por favor inténtalo más tarde.',
-      contexts: [],
+      text: "Ocurrio un error al registrar la cita. Por favor intentalo mas tarde.",
+      contexts: limpiarContextos(queryResult),
     };
   }
 };

@@ -1,17 +1,13 @@
 import {
   getAllPacientesService,
-  getPacienteByIdService,
   getPacienteByDniService,
+  getPacienteByIdService,
 } from "../services/pacientesService.js";
 
 export const getAllPacientes = async (req, res) => {
   try {
     const pacientes = await getAllPacientesService();
-
-    res.status(200).json({
-      message: "Pacientes obtenidos",
-      data: pacientes,
-    });
+    res.status(200).json({ message: "Pacientes obtenidos desde citas", data: pacientes });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -19,14 +15,8 @@ export const getAllPacientes = async (req, res) => {
 
 export const getPacienteById = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const paciente = await getPacienteByIdService(id);
-
-    res.status(200).json({
-      message: "Paciente obtenido",
-      data: paciente,
-    });
+    const paciente = await getPacienteByIdService(req.params.id);
+    res.status(200).json({ message: "Paciente obtenido", data: paciente });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -34,14 +24,8 @@ export const getPacienteById = async (req, res) => {
 
 export const getPacienteByDni = async (req, res) => {
   try {
-    const { dni } = req.params;
-
-    const paciente = await getPacienteByDniService(dni);
-
-    res.status(200).json({
-      message: "Paciente obtenido",
-      data: paciente,
-    });
+    const paciente = await getPacienteByDniService(req.params.dni);
+    res.status(200).json({ message: "Paciente obtenido", data: paciente });
   } catch (error) {
     res.status(404).json({ error: error.message });
   }

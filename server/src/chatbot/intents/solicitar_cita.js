@@ -1,21 +1,22 @@
-import { obtenerPorEspecialidad } from '../../api/services/medicosService.js';
-import { obtenerHorariosDisponibles } from '../../api/services/horariosService.js';
+import { getAllEspecialidadesService } from "../../api/services/especialidadesService.js";
+import { obtenerPorEspecialidad } from "../../api/services/medicosService.js";
+import { obtenerHorariosDisponibles } from "../../api/services/horariosService.js";
 
-export const procesarSolicitarCita = async (queryResult) => {
-  const especialidad = queryResult.parameters.especialidad; // nombre de especialidad
-  const telefono = queryResult.telefonoUsuario; // inyectado por el webhook
+const contextoBase = (queryResult) => {
+  const contexto = queryResult.outputContexts?.[0]?.name || "";
+  return contexto.includes("/contexts/") ? contexto.split("/contexts/")[0] : "";
+};
 
-  // 1. Obtener médicos de la especialidad
+const limpiarContextos = (queryResult) =>
+  (queryResult.outputContexts || []).map((contexto) => ({
+    name: contexto.name,
+    lifespanCount: 0,
+  }));
+
+export const construirOpcionesMedicas = async (especialidad) => {
   const medicos = await obtenerPorEspecialidad(especialidad);
-  if (!medicos || medicos.length === 0) {
-    return {
-      text: `No hay médicos disponibles para ${especialidad}. Intenta con otra especialidad.`,
-      contexts: [],
-    };
-  }
-
-  // 2. Construir lista de horarios disponibles (cada uno con su médico)
   const opciones = [];
+
   for (const medico of medicos) {
     const horarios = await obtenerHorariosDisponibles(medico.id);
     for (const horario of horarios) {
@@ -30,34 +31,70 @@ export const procesarSolicitarCita = async (queryResult) => {
     }
   }
 
-  if (opciones.length === 0) {
+  return opciones;
+};
+
+export const mostrarMedicos = async (especialidad, telefono, queryResult) => {
+  const opciones = await construirOpcionesMedicas(especialidad);
+
+  if (!opciones.length) {
     return {
-      text: `Todos los horarios de ${especialidad} están ocupados. Intenta más tarde.`,
-      contexts: [],
+      text: `No hay horarios disponibles para ${especialidad}.`,
+      contexts: limpiarContextos(queryResult),
     };
   }
 
-  // 3. Formatear lista numerada
-  let respuesta = `📋 *Horarios disponibles en ${especialidad}:*\n\n`;
-  opciones.forEach((op, i) => {
-    respuesta += `${i + 1}. Dr/a. ${op.nombreMedico} - ${op.dia} ${op.horaInicio}-${op.horaFin}\n`;
-  });
-  respuesta += '\nResponde con el *número* del horario que prefieras.';
-
-  // 4. Guardar opciones en contexto
-  const baseSession = queryResult.outputContexts?.[0]?.name?.split('/contexts/')[0] || '';
-  const contextName = `${baseSession}/contexts/awaiting_medico_selection`;
+  const lista = opciones
+    .map(
+      (opcion, index) =>
+        `${index + 1}. Dr/a. ${opcion.nombreMedico} - ${opcion.dia} ${opcion.horaInicio}-${opcion.horaFin}`,
+    )
+    .join("\n");
 
   return {
-    text: respuesta,
-    contexts: [{
-      name: contextName,
-      lifespanCount: 5,
-      parameters: {
-        especialidad,
-        opciones: JSON.stringify(opciones),
-        telefono,
+    text: `Horarios disponibles en ${especialidad}:\n\n${lista}\n\nResponde con el numero del horario que prefieres.`,
+    contexts: [
+      ...limpiarContextos(queryResult),
+      {
+        name: `${contextoBase(queryResult)}/contexts/awaiting_medico_selection`,
+        lifespanCount: 5,
+        parameters: {
+          especialidad,
+          opciones: JSON.stringify(opciones),
+          telefono,
+        },
       },
-    }],
+    ],
+  };
+};
+
+export const procesarSolicitarCita = async (queryResult) => {
+  const especialidad = queryResult.parameters?.especialidad;
+  const telefono = queryResult.telefonoUsuario;
+
+  if (especialidad) {
+    return mostrarMedicos(especialidad, telefono, queryResult);
+  }
+
+  const especialidades = await getAllEspecialidadesService();
+  if (!especialidades.length) {
+    return {
+      text: "No hay especialidades disponibles en este momento.",
+      contexts: limpiarContextos(queryResult),
+    };
+  }
+
+  const lista = especialidades.map((especialidad) => `- ${especialidad.nombre}`).join("\n");
+
+  return {
+    text: `Especialidades disponibles:\n${lista}\n\nQue especialidad necesitas?`,
+    contexts: [
+      ...limpiarContextos(queryResult),
+      {
+        name: `${contextoBase(queryResult)}/contexts/awaiting_especialidad_selection`,
+        lifespanCount: 5,
+        parameters: { telefono },
+      },
+    ],
   };
 };

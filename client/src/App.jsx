@@ -10,18 +10,19 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import Login from "./pages/Login.jsx";
 import Citas from "./pages/Citas.jsx";
-import Usuarios from "./pages/Usuarios.jsx";
-import Horarios from "./pages/Horarios.jsx";
+import Medicos from "./pages/Medicos.jsx";
+import Especialidades from "./pages/Especialidades.jsx";
 import "./App.css";
 
 function NavBar() {
   const { isAuthenticated, logout, user } = useAuth();
   const location = useLocation();
 
-  // No mostrar navbar en login
   if (location.pathname === "/login") {
     return null;
   }
+
+  const linkStyle = { color: "white", textDecoration: "none", cursor: "pointer" };
 
   return (
     <nav
@@ -35,24 +36,9 @@ function NavBar() {
       }}
     >
       <div style={{ display: "flex", gap: "20px" }}>
-        <Link
-          to="/citas"
-          style={{ color: "white", textDecoration: "none", cursor: "pointer" }}
-        >
-          Citas
-        </Link>
-        <Link
-          to="/usuarios"
-          style={{ color: "white", textDecoration: "none", cursor: "pointer" }}
-        >
-          Usuarios
-        </Link>
-        <Link
-          to="/horarios"
-          style={{ color: "white", textDecoration: "none", cursor: "pointer" }}
-        >
-          Horarios
-        </Link>
+        <Link to="/citas" style={linkStyle}>Citas</Link>
+        <Link to="/medicos" style={linkStyle}>Medicos</Link>
+        <Link to="/especialidades" style={linkStyle}>Especialidades</Link>
       </div>
       {isAuthenticated && (
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -79,39 +65,11 @@ function NavBar() {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Ruta pública */}
       <Route path="/login" element={<Login />} />
-
-      {/* Rutas protegidas */}
-      <Route
-        path="/citas"
-        element={
-          <ProtectedRoute>
-            <Citas />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/usuarios"
-        element={
-          <ProtectedRoute>
-            <Usuarios />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/horarios"
-        element={
-          <ProtectedRoute>
-            <Horarios />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Redirigir / a /citas */}
+      <Route path="/citas" element={<ProtectedRoute><Citas /></ProtectedRoute>} />
+      <Route path="/medicos" element={<ProtectedRoute><Medicos /></ProtectedRoute>} />
+      <Route path="/especialidades" element={<ProtectedRoute><Especialidades /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/citas" replace />} />
-
-      {/* Ruta no encontrada */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
