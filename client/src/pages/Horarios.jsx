@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../services/api.js";
 
+const diasSemana = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
+
 const Horarios = () => {
   const [horarios, setHorarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,6 @@ const Horarios = () => {
     cupos: "",
   });
 
-  // Cargar horarios y médicos al montar
   useEffect(() => {
     cargarHorarios();
     cargarMedicos();
@@ -24,12 +25,10 @@ const Horarios = () => {
   const cargarHorarios = async () => {
     try {
       setLoading(true);
-      // Obtener del endpoint disponibles para tener datos formateados
       const response = await api.get("/api/horarios/disponibles");
       setHorarios(response.data.data || []);
       setError("");
     } catch (err) {
-      // Si el endpoint no existe, intentar otro
       setError("Error al cargar horarios");
     } finally {
       setLoading(false);
@@ -90,302 +89,149 @@ const Horarios = () => {
     }
   };
 
-  const diasSemana = [
-    "LUNES",
-    "MARTES",
-    "MIERCOLES",
-    "JUEVES",
-    "VIERNES",
-    "SABADO",
-  ];
-
   if (loading) {
-    return <div style={{ padding: "20px" }}>Cargando horarios...</div>;
+    return <div className="loading-state">Cargando horarios…</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Gestión de Horarios</h1>
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Horarios</h1>
+          <p className="page-subtitle">Bloques de atención disponibles por médico y día.</p>
+        </div>
+        <button onClick={() => setShowForm((prev) => !prev)} className="btn btn-primary">
+          {showForm ? "Cancelar" : "+ Nuevo horario"}
+        </button>
+      </div>
 
-      {error && (
-        <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>
-      )}
-
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{
-          padding: "8px 16px",
-          backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "20px",
-        }}
-      >
-        {showForm ? "Cancelar" : "Crear Nuevo Horario"}
-      </button>
+      {error && <div className="alert-error">{error}</div>}
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            backgroundColor: "#f9f9f9",
-            padding: "20px",
-            borderRadius: "4px",
-            marginBottom: "20px",
-            maxWidth: "500px",
-          }}
-        >
-          <div style={{ marginBottom: "15px" }}>
-            <label
-              htmlFor="medicoId"
-              style={{ display: "block", marginBottom: "5px" }}
-            >
-              Médico:
-            </label>
-            <select
-              id="medicoId"
-              name="medicoId"
-              value={formData.medicoId}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: "100%",
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
-            >
-              <option value="">Seleccionar médico</option>
-              {medicos.map((medico) => (
-                <option key={medico.id} value={medico.id}>
-                  {medico.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
+        <form onSubmit={handleSubmit} className="form-panel">
+          <div className="form-grid">
+            <div className="field-group">
+              <label className="field-label">Médico</label>
+              <select
+                name="medicoId"
+                value={formData.medicoId}
+                onChange={handleInputChange}
+                required
+                className="input"
+              >
+                <option value="">Seleccionar médico</option>
+                {medicos.map((medico) => (
+                  <option key={medico.id} value={medico.id}>
+                    {medico.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div style={{ marginBottom: "15px" }}>
-            <label
-              htmlFor="diaSemana"
-              style={{ display: "block", marginBottom: "5px" }}
-            >
-              Día de la Semana:
-            </label>
-            <select
-              id="diaSemana"
-              name="diaSemana"
-              value={formData.diaSemana}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: "100%",
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
-            >
-              <option value="">Seleccionar día</option>
-              {diasSemana.map((dia) => (
-                <option key={dia} value={dia}>
-                  {dia}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="field-group">
+              <label className="field-label">Día de la semana</label>
+              <select
+                name="diaSemana"
+                value={formData.diaSemana}
+                onChange={handleInputChange}
+                required
+                className="input"
+              >
+                <option value="">Seleccionar día</option>
+                {diasSemana.map((dia) => (
+                  <option key={dia} value={dia}>
+                    {dia}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div style={{ marginBottom: "15px" }}>
-            <label
-              htmlFor="horaInicio"
-              style={{ display: "block", marginBottom: "5px" }}
-            >
-              Hora Inicio:
-            </label>
-            <input
-              id="horaInicio"
-              type="time"
-              name="horaInicio"
-              value={formData.horaInicio}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: "100%",
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
+            <div className="form-grid-2col">
+              <div className="field-group">
+                <label className="field-label">Hora inicio</label>
+                <input
+                  type="time"
+                  name="horaInicio"
+                  value={formData.horaInicio}
+                  onChange={handleInputChange}
+                  required
+                  className="input"
+                />
+              </div>
 
-          <div style={{ marginBottom: "15px" }}>
-            <label
-              htmlFor="horaFin"
-              style={{ display: "block", marginBottom: "5px" }}
-            >
-              Hora Fin:
-            </label>
-            <input
-              id="horaFin"
-              type="time"
-              name="horaFin"
-              value={formData.horaFin}
-              onChange={handleInputChange}
-              required
-              style={{
-                width: "100%",
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
+              <div className="field-group">
+                <label className="field-label">Hora fin</label>
+                <input
+                  type="time"
+                  name="horaFin"
+                  value={formData.horaFin}
+                  onChange={handleInputChange}
+                  required
+                  className="input"
+                />
+              </div>
+            </div>
 
-          <div style={{ marginBottom: "15px" }}>
-            <label
-              htmlFor="cupos"
-              style={{ display: "block", marginBottom: "5px" }}
-            >
-              Cupos:
-            </label>
-            <input
-              id="cupos"
-              type="number"
-              name="cupos"
-              value={formData.cupos}
-              onChange={handleInputChange}
-              required
-              min="1"
-              style={{
-                width: "100%",
-                padding: "8px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
+            <div className="field-group">
+              <label className="field-label">Cupos</label>
+              <input
+                type="number"
+                name="cupos"
+                value={formData.cupos}
+                onChange={handleInputChange}
+                required
+                min="1"
+                placeholder="Ej. 10"
+                className="input"
+              />
+            </div>
 
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "10px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Crear Horario
-          </button>
+            <button type="submit" className="btn btn-primary btn-block">
+              Crear horario
+            </button>
+          </div>
         </form>
       )}
 
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          marginTop: "20px",
-        }}
-      >
-        <thead>
-          <tr style={{ backgroundColor: "#f0f0f0" }}>
-            <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                textAlign: "left",
-              }}
-            >
-              Médico
-            </th>
-            <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                textAlign: "left",
-              }}
-            >
-              Día
-            </th>
-            <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                textAlign: "left",
-              }}
-            >
-              Hora Inicio
-            </th>
-            <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                textAlign: "left",
-              }}
-            >
-              Hora Fin
-            </th>
-            <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                textAlign: "center",
-              }}
-            >
-              Cupos
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {horarios.length === 0 ? (
-            <tr>
-              <td
-                colSpan="5"
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "10px",
-                  textAlign: "center",
-                }}
-              >
-                No hay horarios registrados
-              </td>
-            </tr>
-          ) : (
-            horarios.map((horario) => (
-              <tr key={horario.id}>
-                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {horario.medico?.nombre || "N/A"}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {horario.diaSemana}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {horario.horaInicio}
-                </td>
-                <td style={{ border: "1px solid #ddd", padding: "10px" }}>
-                  {horario.horaFin}
-                </td>
-                <td
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "10px",
-                    textAlign: "center",
-                  }}
-                >
-                  {horario.cupos}
-                </td>
+      <div className="card">
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Médico</th>
+                <th>Día</th>
+                <th>Hora inicio</th>
+                <th>Hora fin</th>
+                <th className="text-center">Cupos</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {horarios.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="empty-state">
+                    No hay horarios registrados todavía.
+                  </td>
+                </tr>
+              ) : (
+                horarios.map((horario) => (
+                  <tr key={horario.id}>
+                    <td className="cell-strong">{horario.medico?.nombre || "N/A"}</td>
+                    <td className="cell-muted">{horario.diaSemana}</td>
+                    <td className="cell-muted">{horario.horaInicio}</td>
+                    <td className="cell-muted">{horario.horaFin}</td>
+                    <td className="text-center">
+                      <span className="badge badge-neutral">
+                        <span className="badge-dot" />
+                        {horario.cupos}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

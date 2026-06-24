@@ -30,76 +30,50 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px" }}>
-      <h1>Iniciar Sesión</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="email"
-            style={{ display: "block", marginBottom: "5px" }}
-          >
-            Email:
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
-          />
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-brand">
+          <span className="sidebar-brand-dot" />
+          <span className="sidebar-brand-text">Clínica Admin</span>
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="password"
-            style={{ display: "block", marginBottom: "5px" }}
-          >
-            Contraseña:
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
+        <h1 className="login-title">Iniciar sesión</h1>
+        <p className="login-subtitle">Ingresa tus credenciales para acceder al panel.</p>
 
-        {error && (
-          <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>
-        )}
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
+            <div className="field-group">
+              <label className="field-label" htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                className="input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.6 : 1,
-          }}
-        >
-          {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
-        </button>
-      </form>
+            <div className="field-group">
+              <label className="field-label" htmlFor="password">Contraseña</label>
+              <input
+                id="password"
+                type="password"
+                className="input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            {error && <div className="alert-error">{error}</div>}
+
+            <button type="submit" disabled={loading} className="btn btn-primary btn-block">
+              {loading ? "Iniciando sesión…" : "Iniciar sesión"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

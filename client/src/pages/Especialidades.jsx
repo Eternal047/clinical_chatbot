@@ -61,89 +61,78 @@ const Especialidades = () => {
   };
 
   if (loading) {
-    return <div style={{ padding: "20px" }}>Cargando especialidades...</div>;
+    return <div className="loading-state">Cargando especialidades…</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Especialidades</h1>
-      {error && <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>}
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Especialidades</h1>
+          <p className="page-subtitle">Especialidades médicas registradas, según los médicos asignados.</p>
+        </div>
+        <button onClick={() => setShowForm((prev) => !prev)} className="btn btn-primary">
+          {showForm ? "Cancelar" : "+ Nueva especialidad"}
+        </button>
+      </div>
 
-      <button onClick={() => setShowForm((prev) => !prev)} style={buttonStyle}>
-        {showForm ? "Cancelar" : "Crear Especialidad"}
-      </button>
+      {error && <div className="alert-error">{error}</div>}
 
       {showForm && (
-        <form onSubmit={handleSubmit} style={formStyle}>
-          <input
-            value={nombre}
-            onChange={(event) => setNombre(event.target.value)}
-            placeholder="Nombre de la especialidad"
-            required
-            style={inputStyle}
-          />
-          <button type="submit" style={{ padding: "10px", cursor: "pointer" }}>
-            Guardar Especialidad
-          </button>
+        <form onSubmit={handleSubmit} className="form-panel">
+          <div className="form-grid">
+            <div className="field-group">
+              <label className="field-label">Nombre de la especialidad</label>
+              <input
+                className="input"
+                value={nombre}
+                onChange={(event) => setNombre(event.target.value)}
+                placeholder="Ej. Cardiología"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">
+              Guardar especialidad
+            </button>
+          </div>
         </form>
       )}
 
-      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f0f0f0" }}>
-            <th style={thStyle}>Nombre</th>
-            <th style={{ ...thStyle, textAlign: "center" }}>Medicos</th>
-          </tr>
-        </thead>
-        <tbody>
-          {especialidades.length === 0 ? (
-            <tr>
-              <td colSpan="2" style={{ ...tdStyle, textAlign: "center" }}>
-                No hay especialidades visibles desde medicos registrados
-              </td>
-            </tr>
-          ) : (
-            especialidades.map((especialidad) => (
-              <tr key={especialidad.id}>
-                <td style={tdStyle}>{especialidad.nombre}</td>
-                <td style={{ ...tdStyle, textAlign: "center" }}>
-                  {especialidad.medicos?.length || 0}
-                </td>
+      <div className="card">
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th className="text-center">Médicos</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {especialidades.length === 0 ? (
+                <tr>
+                  <td colSpan="2" className="empty-state">
+                    No hay especialidades visibles desde médicos registrados.
+                  </td>
+                </tr>
+              ) : (
+                especialidades.map((especialidad) => (
+                  <tr key={especialidad.id}>
+                    <td className="cell-strong">{especialidad.nombre}</td>
+                    <td className="text-center">
+                      <span className="badge badge-neutral">
+                        <span className="badge-dot" />
+                        {especialidad.medicos?.length || 0}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
-
-const buttonStyle = {
-  padding: "8px 16px",
-  backgroundColor: "#28a745",
-  color: "white",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  marginBottom: "20px",
-};
-const formStyle = {
-  backgroundColor: "#f9f9f9",
-  padding: "20px",
-  borderRadius: "4px",
-  marginBottom: "20px",
-  display: "grid",
-  gap: "15px",
-  maxWidth: "500px",
-};
-const inputStyle = {
-  width: "100%",
-  padding: "8px",
-  border: "1px solid #ccc",
-  borderRadius: "4px",
-  boxSizing: "border-box",
-};
-const thStyle = { border: "1px solid #ddd", padding: "10px", textAlign: "left" };
-const tdStyle = { border: "1px solid #ddd", padding: "10px" };
 
 export default Especialidades;

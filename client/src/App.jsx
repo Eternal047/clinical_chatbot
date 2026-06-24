@@ -12,53 +12,53 @@ import Login from "./pages/Login.jsx";
 import Citas from "./pages/Citas.jsx";
 import Medicos from "./pages/Medicos.jsx";
 import Especialidades from "./pages/Especialidades.jsx";
+import Horarios from "./pages/Horarios.jsx";
+import "./styles/theme.css";
 import "./App.css";
 
-function NavBar() {
+const NAV_ITEMS = [
+  { to: "/citas", label: "Citas", icon: "📅" },
+  { to: "/medicos", label: "Médicos", icon: "🩺" },
+  { to: "/especialidades", label: "Especialidades", icon: "🏷️" },
+  { to: "/horarios", label: "Horarios", icon: "🕐" },
+];
+
+function Sidebar() {
   const { isAuthenticated, logout, user } = useAuth();
   const location = useLocation();
 
-  if (location.pathname === "/login") {
-    return null;
-  }
-
-  const linkStyle = { color: "white", textDecoration: "none", cursor: "pointer" };
-
   return (
-    <nav
-      style={{
-        backgroundColor: "#333",
-        padding: "10px 20px",
-        marginBottom: "20px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/citas" style={linkStyle}>Citas</Link>
-        <Link to="/medicos" style={linkStyle}>Medicos</Link>
-        <Link to="/especialidades" style={linkStyle}>Especialidades</Link>
+    <aside className="sidebar">
+      <div className="sidebar-brand">
+        <span className="sidebar-brand-dot" />
+        <span className="sidebar-brand-text">Clínica Admin</span>
       </div>
-      {isAuthenticated && (
-        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <span style={{ color: "white" }}>Bienvenido: {user?.nombre}</span>
-          <button
-            onClick={logout}
-            style={{
-              padding: "6px 12px",
-              backgroundColor: "#dc3545",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
+
+      <nav className="sidebar-nav">
+        {NAV_ITEMS.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`sidebar-link ${location.pathname === item.to ? "active" : ""}`}
           >
-            Logout
+            <span className="sidebar-link-icon">{item.icon}</span>
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      {isAuthenticated && (
+        <div className="sidebar-footer">
+          <div className="sidebar-user">
+            <span className="sidebar-user-label">Sesión activa</span>
+            <span className="sidebar-user-name">{user?.nombre}</span>
+          </div>
+          <button onClick={logout} className="btn-logout">
+            Cerrar sesión
           </button>
         </div>
       )}
-    </nav>
+    </aside>
   );
 }
 
@@ -69,9 +69,27 @@ function AppRoutes() {
       <Route path="/citas" element={<ProtectedRoute><Citas /></ProtectedRoute>} />
       <Route path="/medicos" element={<ProtectedRoute><Medicos /></ProtectedRoute>} />
       <Route path="/especialidades" element={<ProtectedRoute><Especialidades /></ProtectedRoute>} />
+      <Route path="/horarios" element={<ProtectedRoute><Horarios /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/citas" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+  );
+}
+
+function AppShell() {
+  const location = useLocation();
+
+  if (location.pathname === "/login") {
+    return <AppRoutes />;
+  }
+
+  return (
+    <div className="shell">
+      <Sidebar />
+      <main className="shell-main">
+        <AppRoutes />
+      </main>
+    </div>
   );
 }
 
@@ -79,12 +97,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="app">
-          <NavBar />
-          <main>
-            <AppRoutes />
-          </main>
-        </div>
+        <AppShell />
       </AuthProvider>
     </Router>
   );

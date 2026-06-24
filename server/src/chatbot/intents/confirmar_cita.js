@@ -27,7 +27,7 @@ const limpiarContextos = (queryResult) =>
   }));
 
 export const procesarConfirmarCita = async (queryResult) => {
-  const confirmacion = normalizarConfirmacion(queryResult.parameters?.confirmacion);
+  const confirmacion = queryResult.parameters?.confirmacion
   const contextoConfirmacion = obtenerContexto(queryResult, "awaiting_confirmacion");
   const contextParams = contextoConfirmacion?.parameters || {};
 

@@ -16,9 +16,6 @@ const obtenerEspecialidadesDesdeMedicos = (medicos) => {
     a.nombre.localeCompare(b.nombre),
   );
 };
-const inputStyle = { width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "4px", boxSizing: "border-box" };
-const thStyle = { border: "1px solid #ddd", padding: "10px", textAlign: "left" };
-const tdStyle = { border: "1px solid #ddd", padding: "10px", verticalAlign: "top" };
 
 const Medicos = () => {
   const [medicos, setMedicos] = useState([]);
@@ -74,125 +71,191 @@ const Medicos = () => {
   };
 
   if (loading) {
-    return <div style={{ padding: "20px" }}>Cargando medicos...</div>;
+    return <div className="loading-state">Cargando médicos…</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Medicos</h1>
-      {error && <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>}
-
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <button onClick={() => setShowMedicoForm((prev) => !prev)} style={primaryButtonStyle}>
-          {showMedicoForm ? "Cerrar Medico" : "Crear Medico"}
-        </button>
-        <button onClick={() => setShowHorarioForm((prev) => !prev)} style={secondaryButtonStyle}>
-          {showHorarioForm ? "Cerrar Horario" : "Asignar Horario"}
-        </button>
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Médicos</h1>
+          <p className="page-subtitle">Registra médicos, su especialidad y los horarios que atienden.</p>
+        </div>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button onClick={() => setShowMedicoForm((prev) => !prev)} className="btn btn-primary">
+            {showMedicoForm ? "Cerrar" : "+ Nuevo médico"}
+          </button>
+          <button onClick={() => setShowHorarioForm((prev) => !prev)} className="btn btn-secondary">
+            {showHorarioForm ? "Cerrar" : "+ Asignar horario"}
+          </button>
+        </div>
       </div>
 
+      {error && <div className="alert-error">{error}</div>}
+
       {showMedicoForm && (
-        <form onSubmit={handleMedicoSubmit} style={formStyle}>
-          <input
-            placeholder="Nombre"
-            value={medicoForm.nombre}
-            onChange={(event) => setMedicoForm((prev) => ({ ...prev, nombre: event.target.value }))}
-            required
-            style={inputStyle}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={medicoForm.email}
-            onChange={(event) => setMedicoForm((prev) => ({ ...prev, email: event.target.value }))}
-            required
-            style={inputStyle}
-          />
-          <select
-            value={medicoForm.especialidadId}
-            onChange={(event) => setMedicoForm((prev) => ({ ...prev, especialidadId: event.target.value }))}
-            required
-            style={inputStyle}
-          >
-            <option value="">Seleccionar especialidad</option>
-            {especialidades.length === 0 && (
-              <option value="" disabled>No hay especialidades disponibles desde medicos</option>
-            )}
-            {especialidades.map((especialidad) => (
-              <option key={especialidad.id} value={especialidad.id}>{especialidad.nombre}</option>
-            ))}
-          </select>
-          <button type="submit" style={{ padding: "10px", cursor: "pointer" }}>Guardar Medico</button>
+        <form onSubmit={handleMedicoSubmit} className="form-panel">
+          <div className="form-grid">
+            <div className="field-group">
+              <label className="field-label">Nombre</label>
+              <input
+                className="input"
+                placeholder="Ej. Dr. Carlos Ramírez"
+                value={medicoForm.nombre}
+                onChange={(event) => setMedicoForm((prev) => ({ ...prev, nombre: event.target.value }))}
+                required
+              />
+            </div>
+            <div className="field-group">
+              <label className="field-label">Email</label>
+              <input
+                className="input"
+                type="email"
+                placeholder="correo@clinica.com"
+                value={medicoForm.email}
+                onChange={(event) => setMedicoForm((prev) => ({ ...prev, email: event.target.value }))}
+                required
+              />
+            </div>
+            <div className="field-group">
+              <label className="field-label">Especialidad</label>
+              <select
+                className="input"
+                value={medicoForm.especialidadId}
+                onChange={(event) => setMedicoForm((prev) => ({ ...prev, especialidadId: event.target.value }))}
+                required
+              >
+                <option value="">Seleccionar especialidad</option>
+                {especialidades.length === 0 && (
+                  <option value="" disabled>No hay especialidades disponibles desde médicos</option>
+                )}
+                {especialidades.map((especialidad) => (
+                  <option key={especialidad.id} value={especialidad.id}>{especialidad.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">Guardar médico</button>
+          </div>
         </form>
       )}
 
       {showHorarioForm && (
-        <form onSubmit={handleHorarioSubmit} style={formStyle}>
-          <select
-            value={horarioForm.medicoId}
-            onChange={(event) => setHorarioForm((prev) => ({ ...prev, medicoId: event.target.value }))}
-            required
-            style={inputStyle}
-          >
-            <option value="">Seleccionar medico</option>
-            {medicos.map((medico) => (
-              <option key={medico.id} value={medico.id}>{medico.nombre}</option>
-            ))}
-          </select>
-          <select
-            value={horarioForm.diaSemana}
-            onChange={(event) => setHorarioForm((prev) => ({ ...prev, diaSemana: event.target.value }))}
-            required
-            style={inputStyle}
-          >
-            <option value="">Seleccionar dia</option>
-            {diasSemana.map((dia) => <option key={dia} value={dia}>{dia}</option>)}
-          </select>
-          <input type="time" value={horarioForm.horaInicio} onChange={(event) => setHorarioForm((prev) => ({ ...prev, horaInicio: event.target.value }))} required style={inputStyle} />
-          <input type="time" value={horarioForm.horaFin} onChange={(event) => setHorarioForm((prev) => ({ ...prev, horaFin: event.target.value }))} required style={inputStyle} />
-          <input type="number" min="1" placeholder="Cupos" value={horarioForm.cupos} onChange={(event) => setHorarioForm((prev) => ({ ...prev, cupos: event.target.value }))} required style={inputStyle} />
-          <button type="submit" style={{ padding: "10px", cursor: "pointer" }}>Guardar Horario</button>
+        <form onSubmit={handleHorarioSubmit} className="form-panel">
+          <div className="form-grid">
+            <div className="field-group">
+              <label className="field-label">Médico</label>
+              <select
+                className="input"
+                value={horarioForm.medicoId}
+                onChange={(event) => setHorarioForm((prev) => ({ ...prev, medicoId: event.target.value }))}
+                required
+              >
+                <option value="">Seleccionar médico</option>
+                {medicos.map((medico) => (
+                  <option key={medico.id} value={medico.id}>{medico.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <div className="field-group">
+              <label className="field-label">Día de la semana</label>
+              <select
+                className="input"
+                value={horarioForm.diaSemana}
+                onChange={(event) => setHorarioForm((prev) => ({ ...prev, diaSemana: event.target.value }))}
+                required
+              >
+                <option value="">Seleccionar día</option>
+                {diasSemana.map((dia) => <option key={dia} value={dia}>{dia}</option>)}
+              </select>
+            </div>
+            <div className="form-grid-2col">
+              <div className="field-group">
+                <label className="field-label">Hora inicio</label>
+                <input
+                  className="input"
+                  type="time"
+                  value={horarioForm.horaInicio}
+                  onChange={(event) => setHorarioForm((prev) => ({ ...prev, horaInicio: event.target.value }))}
+                  required
+                />
+              </div>
+              <div className="field-group">
+                <label className="field-label">Hora fin</label>
+                <input
+                  className="input"
+                  type="time"
+                  value={horarioForm.horaFin}
+                  onChange={(event) => setHorarioForm((prev) => ({ ...prev, horaFin: event.target.value }))}
+                  required
+                />
+              </div>
+            </div>
+            <div className="field-group">
+              <label className="field-label">Cupos</label>
+              <input
+                className="input"
+                type="number"
+                min="1"
+                placeholder="Ej. 10"
+                value={horarioForm.cupos}
+                onChange={(event) => setHorarioForm((prev) => ({ ...prev, cupos: event.target.value }))}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">Guardar horario</button>
+          </div>
         </form>
       )}
 
-      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f0f0f0" }}>
-            <th style={thStyle}>Nombre</th>
-            <th style={thStyle}>Email</th>
-            <th style={thStyle}>Especialidad</th>
-            <th style={thStyle}>Horarios</th>
-          </tr>
-        </thead>
-        <tbody>
-          {medicos.length === 0 ? (
-            <tr><td colSpan="4" style={{ ...tdStyle, textAlign: "center" }}>No hay medicos registrados</td></tr>
-          ) : (
-            medicos.map((medico) => (
-              <tr key={medico.id}>
-                <td style={tdStyle}>{medico.nombre}</td>
-                <td style={tdStyle}>{medico.email}</td>
-                <td style={tdStyle}>{medico.especialidad?.nombre || "N/A"}</td>
-                <td style={tdStyle}>
-                  {medico.horarios?.length ? (
-                    medico.horarios.map((horario) => (
-                      <div key={horario.id}>{horario.diaSemana} {horario.horaInicio}-{horario.horaFin} ({horario.cupos} cupos)</div>
-                    ))
-                  ) : (
-                    "Sin horarios"
-                  )}
-                </td>
+      <div className="card">
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Especialidad</th>
+                <th>Horarios</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {medicos.length === 0 ? (
+                <tr><td colSpan="4" className="empty-state">No hay médicos registrados todavía.</td></tr>
+              ) : (
+                medicos.map((medico) => (
+                  <tr key={medico.id}>
+                    <td className="cell-strong">{medico.nombre}</td>
+                    <td className="cell-muted">{medico.email}</td>
+                    <td>
+                      {medico.especialidad?.nombre ? (
+                        <span className="badge badge-neutral">
+                          <span className="badge-dot" />
+                          {medico.especialidad.nombre}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td>
+                      {medico.horarios?.length ? (
+                        medico.horarios.map((horario) => (
+                          <div key={horario.id} className="schedule-line">
+                            {horario.diaSemana} {horario.horaInicio}-{horario.horaFin} ({horario.cupos} cupos)
+                          </div>
+                        ))
+                      ) : (
+                        <span className="cell-muted">Sin horarios</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
-
-const formStyle = { backgroundColor: "#f9f9f9", padding: "20px", borderRadius: "4px", marginBottom: "20px", display: "grid", gap: "15px", maxWidth: "640px" };
-const primaryButtonStyle = { padding: "8px 16px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" };
-const secondaryButtonStyle = { padding: "8px 16px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" };
 
 export default Medicos;

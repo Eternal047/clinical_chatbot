@@ -4,25 +4,22 @@ import api from "../services/api.js";
 const dias = {
   LUNES: "Lunes",
   MARTES: "Martes",
-  MIERCOLES: "Miercoles",
+  MIERCOLES: "Miércoles",
   JUEVES: "Jueves",
   VIERNES: "Viernes",
-  SABADO: "Sabado",
+  SABADO: "Sábado",
 };
 
-const estadoStyle = (estado) => ({
-  padding: "4px 8px",
-  borderRadius: "4px",
-  backgroundColor: estado === "ACTIVA" ? "#d4edda" : "#f8d7da",
-  color: estado === "ACTIVA" ? "#155724" : "#721c24",
-});
+const PREFIJO_PERU = "+51";
 
-const inputStyle = {
-  width: "100%",
-  padding: "8px",
-  border: "1px solid #ccc",
-  borderRadius: "4px",
-  boxSizing: "border-box",
+const StatusBadge = ({ estado }) => {
+  const isActiva = estado === "ACTIVA";
+  return (
+    <span className={`badge ${isActiva ? "badge-success" : "badge-danger"}`}>
+      <span className="badge-dot" />
+      {estado}
+    </span>
+  );
 };
 
 const Citas = () => {
@@ -65,11 +62,20 @@ const Citas = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // El input solo captura los dígitos locales; el +51 se concatena al enviar.
+  const handleTelefonoChange = (event) => {
+    const soloDigitos = event.target.value.replace(/\D/g, "");
+    setFormData((prev) => ({ ...prev, pacienteTelef: soloDigitos }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      await api.post("/api/citas", formData);
+      await api.post("/api/citas", {
+        ...formData,
+        pacienteTelef: `${PREFIJO_PERU}${formData.pacienteTelef}`,
+      });
       setFormData({
         pacienteNombre: "",
         pacienteDni: "",
@@ -85,7 +91,7 @@ const Citas = () => {
   };
 
   const handleCancelar = async (id) => {
-    if (!window.confirm("Esta seguro que desea cancelar esta cita?")) return;
+    if (!window.confirm("¿Está seguro que desea cancelar esta cita?")) return;
 
     try {
       await api.patch(`/api/citas/${id}/cancelar`);
@@ -98,152 +104,160 @@ const Citas = () => {
   const formatearFecha = (fecha) => new Date(fecha).toLocaleDateString("es-PE");
 
   if (loading) {
-    return <div style={{ padding: "20px" }}>Cargando citas...</div>;
+    return <div className="loading-state">Cargando citas…</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Gestion de Citas</h1>
-      {error && <div style={{ color: "red", marginBottom: "15px" }}>{error}</div>}
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Citas</h1>
+          <p className="page-subtitle">Gestiona las citas registradas por el chatbot y el panel administrativo.</p>
+        </div>
+        <button onClick={() => setShowForm((prev) => !prev)} className="btn btn-primary">
+          {showForm ? "Cancelar" : "+ Nueva cita"}
+        </button>
+      </div>
 
-      <button
-        onClick={() => setShowForm((prev) => !prev)}
-        style={{
-          padding: "8px 16px",
-          backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "20px",
-        }}
-      >
-        {showForm ? "Cancelar" : "Crear Nueva Cita"}
-      </button>
+      {error && <div className="alert-error">{error}</div>}
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            backgroundColor: "#f9f9f9",
-            padding: "20px",
-            borderRadius: "4px",
-            marginBottom: "20px",
-            display: "grid",
-            gap: "15px",
-            maxWidth: "720px",
-          }}
-        >
-          <input
-            name="pacienteNombre"
-            value={formData.pacienteNombre}
-            onChange={handleChange}
-            placeholder="Nombre del paciente"
-            required
-            style={inputStyle}
-          />
-          <input
-            name="pacienteDni"
-            value={formData.pacienteDni}
-            onChange={handleChange}
-            placeholder="DNI"
-            required
-            style={inputStyle}
-          />
-          <input
-            name="pacienteTelef"
-            value={formData.pacienteTelef}
-            onChange={handleChange}
-            placeholder="Telefono"
-            required
-            style={inputStyle}
-          />
-          <input
-            type="date"
-            name="fecha"
-            value={formData.fecha}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-          <select
-            name="horarioId"
-            value={formData.horarioId}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          >
-            <option value="">Seleccionar horario</option>
-            {horarios.map((horario) => (
-              <option key={horario.id} value={horario.id}>
-                {horario.medico?.nombre} - {dias[horario.diaSemana] || horario.diaSemana} {horario.horaInicio}-{horario.horaFin}
-              </option>
-            ))}
-          </select>
-          <button type="submit" style={{ padding: "10px", cursor: "pointer" }}>
-            Guardar Cita
-          </button>
+        <form onSubmit={handleSubmit} className="form-panel">
+          <div className="form-grid">
+            <div className="form-grid-2col">
+              <div className="field-group">
+                <label className="field-label">Nombre del paciente</label>
+                <input
+                  className="input"
+                  name="pacienteNombre"
+                  value={formData.pacienteNombre}
+                  onChange={handleChange}
+                  placeholder="Ej. Ana Torres Reyes"
+                  required
+                />
+              </div>
+              <div className="field-group">
+                <label className="field-label">DNI</label>
+                <input
+                  className="input"
+                  name="pacienteDni"
+                  value={formData.pacienteDni}
+                  onChange={handleChange}
+                  placeholder="8 dígitos"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-grid-2col">
+              <div className="field-group">
+                <label className="field-label">Teléfono</label>
+                <div className="input-phone-group">
+                  <span className="input-phone-prefix">{PREFIJO_PERU}</span>
+                  <input
+                    className="input"
+                    name="pacienteTelef"
+                    value={formData.pacienteTelef}
+                    onChange={handleTelefonoChange}
+                    placeholder="961219063"
+                    inputMode="numeric"
+                    maxLength={9}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="field-group">
+                <label className="field-label">Fecha</label>
+                <input
+                  className="input"
+                  type="date"
+                  name="fecha"
+                  value={formData.fecha}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="field-group">
+              <label className="field-label">Horario</label>
+              <select
+                className="input"
+                name="horarioId"
+                value={formData.horarioId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccionar horario</option>
+                {horarios.map((horario) => (
+                  <option key={horario.id} value={horario.id}>
+                    {horario.medico?.nombre} — {dias[horario.diaSemana] || horario.diaSemana} {horario.horaInicio}-{horario.horaFin}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-block">
+              Guardar cita
+            </button>
+          </div>
         </form>
       )}
 
-      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f0f0f0" }}>
-            <th style={thStyle}>Paciente</th>
-            <th style={thStyle}>DNI</th>
-            <th style={thStyle}>Telefono</th>
-            <th style={thStyle}>Fecha</th>
-            <th style={thStyle}>Horario</th>
-            <th style={thStyle}>Medico</th>
-            <th style={thStyle}>Estado</th>
-            <th style={{ ...thStyle, textAlign: "center" }}>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {citas.length === 0 ? (
-            <tr>
-              <td colSpan="8" style={emptyStyle}>No hay citas registradas</td>
-            </tr>
-          ) : (
-            citas.map((cita) => (
-              <tr key={cita.id}>
-                <td style={tdStyle}>{cita.pacienteNombre}</td>
-                <td style={tdStyle}>{cita.pacienteDni}</td>
-                <td style={tdStyle}>{cita.pacienteTelef}</td>
-                <td style={tdStyle}>{formatearFecha(cita.fecha)}</td>
-                <td style={tdStyle}>
-                  {cita.horario
-                    ? `${dias[cita.horario.diaSemana] || cita.horario.diaSemana} ${cita.horario.horaInicio}-${cita.horario.horaFin}`
-                    : "N/A"}
-                </td>
-                <td style={tdStyle}>{cita.horario?.medico?.nombre || "N/A"}</td>
-                <td style={tdStyle}><span style={estadoStyle(cita.estado)}>{cita.estado}</span></td>
-                <td style={{ ...tdStyle, textAlign: "center" }}>
-                  {cita.estado === "ACTIVA" && (
-                    <button onClick={() => handleCancelar(cita.id)} style={dangerButtonStyle}>
-                      Cancelar
-                    </button>
-                  )}
-                </td>
+      <div className="card">
+        <div className="table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>DNI</th>
+                <th>Teléfono</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Médico</th>
+                <th>Estado</th>
+                <th className="text-center">Acciones</th>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {citas.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="empty-state">
+                    No hay citas registradas todavía.
+                  </td>
+                </tr>
+              ) : (
+                citas.map((cita) => (
+                  <tr key={cita.id}>
+                    <td className="cell-strong">{cita.pacienteNombre}</td>
+                    <td className="cell-muted">{cita.pacienteDni}</td>
+                    <td className="cell-muted">{cita.pacienteTelef}</td>
+                    <td className="cell-muted">{formatearFecha(cita.fecha)}</td>
+                    <td className="cell-muted">
+                      {cita.horario
+                        ? `${dias[cita.horario.diaSemana] || cita.horario.diaSemana} ${cita.horario.horaInicio}-${cita.horario.horaFin}`
+                        : "N/A"}
+                    </td>
+                    <td>{cita.horario?.medico?.nombre || "N/A"}</td>
+                    <td>
+                      <StatusBadge estado={cita.estado} />
+                    </td>
+                    <td className="text-center">
+                      {cita.estado === "ACTIVA" && (
+                        <button onClick={() => handleCancelar(cita.id)} className="btn btn-danger-ghost">
+                          Cancelar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
-};
-
-const thStyle = { border: "1px solid #ddd", padding: "10px", textAlign: "left" };
-const tdStyle = { border: "1px solid #ddd", padding: "10px" };
-const emptyStyle = { ...tdStyle, textAlign: "center" };
-const dangerButtonStyle = {
-  padding: "6px 12px",
-  backgroundColor: "#dc3545",
-  color: "white",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
 };
 
 export default Citas;
