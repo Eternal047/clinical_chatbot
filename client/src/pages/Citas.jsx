@@ -37,12 +37,20 @@ const Citas = () => {
   });
 
   useEffect(() => {
-    cargarDatos();
+    cargarDatos({ mostrarLoading: true });
+
+    // Refresca la lista de citas automáticamente cada 10s,
+    // sin mostrar el spinner de carga ni interrumpir al usuario.
+    const intervalId = setInterval(() => {
+      cargarDatos({ mostrarLoading: false });
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
-  const cargarDatos = async () => {
+  const cargarDatos = async ({ mostrarLoading } = { mostrarLoading: false }) => {
     try {
-      setLoading(true);
+      if (mostrarLoading) setLoading(true);
       const [citasResponse, horariosResponse] = await Promise.all([
         api.get("/api/citas"),
         api.get("/api/horarios"),
@@ -51,9 +59,13 @@ const Citas = () => {
       setHorarios(horariosResponse.data.data || []);
       setError("");
     } catch (err) {
-      setError(err.response?.data?.error || "Error al cargar citas");
+      // En refrescos silenciosos no mostramos error para no alarmar
+      // si hay un fallo puntual de red; solo lo mostramos en la carga inicial.
+      if (mostrarLoading) {
+        setError(err.response?.data?.error || "Error al cargar citas");
+      }
     } finally {
-      setLoading(false);
+      if (mostrarLoading) setLoading(false);
     }
   };
 

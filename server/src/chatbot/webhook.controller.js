@@ -7,6 +7,9 @@ import { procesarConfirmarCita } from "./intents/confirmar_cita.js";
 import { procesarCancelarCita } from "./intents/cancelar_cita.js"; // unificado
 import { procesarReprogramarCita } from "./intents/reprogramar_cita.js";
 import { procesarConsultarCitas } from "./intents/listar_citas.js"; // nuevo
+import { procesarConsultarEspecialidades } from "./intents/consultar_especialidades.js";
+import { procesarSeleccionarEspecialidadInfo } from "./intents/seleccionar_especialidad_info.js";
+
 
 // Mapeo de intents → handlers
 const intentHandlers = {
@@ -26,6 +29,8 @@ const intentHandlers = {
   "reprogramar_cita - horario": procesarReprogramarCita,
   "reprogramar_cita - confirmar": procesarReprogramarCita,
   consultar_citas: procesarConsultarCitas,
+  consultar_especialidades: procesarConsultarEspecialidades,
+  "consultar_especialidades - seleccionar": procesarSeleccionarEspecialidadInfo,
 };
 
 /**
