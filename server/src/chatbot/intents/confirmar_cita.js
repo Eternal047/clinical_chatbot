@@ -60,7 +60,7 @@ export const procesarConfirmarCita = async (queryResult) => {
     });
 
     return {
-      text: `Cita registrada con exito. Numero de referencia: ${cita.id}.`,
+      text: `Cita registrada con exito. Gracias por tu preferencia, ${cita.pacienteNombre}. Te esperamos en la fecha y hora acordadas.`,
       contexts: limpiarContextos(queryResult),
     };
   } catch (error) {
