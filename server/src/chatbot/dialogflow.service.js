@@ -10,11 +10,19 @@ const sessionClient = new dialogflow.SessionsClient({
   },
 });
 
-export const detectIntentService = async (sessionId, text, languageCode = "es") => {
+export const detectIntentService = async (
+  sessionId,
+  text,
+  languageCode = "es",
+  outputContexts = [],
+) => {
   // Limpiar sessionId de caracteres no permitidos
-  const cleanSessionId = sessionId.replace(/[^a-zA-Z0-9_-]/g, '');
-  
-  const sessionPath = sessionClient.projectAgentSessionPath(projectId, cleanSessionId);
+  const cleanSessionId = sessionId.replace(/[^a-zA-Z0-9_-]/g, "");
+
+  const sessionPath = sessionClient.projectAgentSessionPath(
+    projectId,
+    cleanSessionId,
+  );
 
   const request = {
     session: sessionPath,
@@ -26,14 +34,19 @@ export const detectIntentService = async (sessionId, text, languageCode = "es") 
     },
   };
 
+  if (outputContexts.length) {
+    request.queryParams = { contexts: outputContexts };
+  }
+
   const [response] = await sessionClient.detectIntent(request);
   const result = response.queryResult;
 
   return {
-    intent: result.intent?.displayName || 'Desconocido',
+    intent: result.intent?.displayName || "Desconocido",
     parameters: result.parameters?.fields || {},
     allRequiredParamsPresent: result.allRequiredParamsPresent,
-    fulfillmentText: result.fulfillmentText || '',
+    fulfillmentText: result.fulfillmentText || "",
     outputContexts: result.outputContexts || [],
+    webhookPayload: result.webhookPayload || null,
   };
 };

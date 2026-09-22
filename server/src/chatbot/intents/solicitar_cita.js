@@ -1,17 +1,16 @@
 import { getAllEspecialidadesService } from "../../api/services/especialidadesService.js";
 import { obtenerPorEspecialidad } from "../../api/services/medicosService.js";
 import { obtenerHorariosDisponibles } from "../../api/services/horariosService.js";
+import {
+  limpiarContextos,
+  crearContextoIdentidad,
+  obtenerDatosPaciente,
+  obtenerSesion,
+} from "../context.utils.js";
 
 const contextoBase = (queryResult) => {
-  const contexto = queryResult.outputContexts?.[0]?.name || "";
-  return contexto.includes("/contexts/") ? contexto.split("/contexts/")[0] : "";
+  return obtenerSesion(queryResult);
 };
-
-const limpiarContextos = (queryResult) =>
-  (queryResult.outputContexts || []).map((contexto) => ({
-    name: contexto.name,
-    lifespanCount: 0,
-  }));
 
 export const construirOpcionesMedicas = async (especialidad) => {
   const medicos = await obtenerPorEspecialidad(especialidad);
@@ -34,7 +33,12 @@ export const construirOpcionesMedicas = async (especialidad) => {
   return opciones;
 };
 
-export const mostrarMedicos = async (especialidad, telefono, queryResult) => {
+export const mostrarMedicos = async (
+  especialidad,
+  telefono,
+  queryResult,
+  datosPaciente = obtenerDatosPaciente(queryResult),
+) => {
   const opciones = await construirOpcionesMedicas(especialidad);
 
   if (!opciones.length) {
@@ -55,6 +59,9 @@ export const mostrarMedicos = async (especialidad, telefono, queryResult) => {
     text: `Horarios disponibles en ${especialidad}:\n\n${lista}\n\nResponde con el numero del horario que prefieres.`,
     contexts: [
       ...limpiarContextos(queryResult),
+      ...(crearContextoIdentidad(queryResult, datosPaciente)
+        ? [crearContextoIdentidad(queryResult, datosPaciente)]
+        : []),
       {
         name: `${contextoBase(queryResult)}/contexts/awaiting_medico_selection`,
         lifespanCount: 5,
@@ -62,7 +69,39 @@ export const mostrarMedicos = async (especialidad, telefono, queryResult) => {
           especialidad,
           opciones: JSON.stringify(opciones),
           telefono,
+          ...datosPaciente,
         },
+      },
+    ],
+  };
+};
+
+export const mostrarEspecialidades = async (telefono, queryResult) => {
+  const especialidades = await getAllEspecialidadesService();
+  const datosPaciente = obtenerDatosPaciente(queryResult);
+
+  if (!especialidades.length) {
+    return {
+      text: "No hay especialidades disponibles en este momento.",
+      contexts: limpiarContextos(queryResult),
+    };
+  }
+
+  const lista = especialidades
+    .map((especialidad) => `- ${especialidad.nombre}`)
+    .join("\n");
+
+  return {
+    text: `Especialidades disponibles:\n${lista}\n\nQue especialidad necesitas?`,
+    contexts: [
+      ...limpiarContextos(queryResult),
+      ...(crearContextoIdentidad(queryResult, datosPaciente)
+        ? [crearContextoIdentidad(queryResult, datosPaciente)]
+        : []),
+      {
+        name: `${contextoBase(queryResult)}/contexts/awaiting_especialidad_selection`,
+        lifespanCount: 5,
+        parameters: { telefono, ...datosPaciente },
       },
     ],
   };
@@ -76,25 +115,5 @@ export const procesarSolicitarCita = async (queryResult) => {
     return mostrarMedicos(especialidad, telefono, queryResult);
   }
 
-  const especialidades = await getAllEspecialidadesService();
-  if (!especialidades.length) {
-    return {
-      text: "No hay especialidades disponibles en este momento.",
-      contexts: limpiarContextos(queryResult),
-    };
-  }
-
-  const lista = especialidades.map((especialidad) => `- ${especialidad.nombre}`).join("\n");
-
-  return {
-    text: `Especialidades disponibles:\n${lista}\n\nQue especialidad necesitas?`,
-    contexts: [
-      ...limpiarContextos(queryResult),
-      {
-        name: `${contextoBase(queryResult)}/contexts/awaiting_especialidad_selection`,
-        lifespanCount: 5,
-        parameters: { telefono },
-      },
-    ],
-  };
+  return mostrarEspecialidades(telefono, queryResult);
 };

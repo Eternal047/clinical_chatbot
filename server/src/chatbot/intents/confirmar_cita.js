@@ -1,5 +1,10 @@
 import { crearCita } from "../../api/services/citasService.js";
-import { mostrarMedicos } from "./solicitar_cita.js";
+import { mostrarEspecialidades, mostrarMedicos } from "./solicitar_cita.js";
+import {
+  limpiarContextos,
+  obtenerContexto,
+  obtenerDatosPaciente,
+} from "../context.utils.js";
 
 const normalizarConfirmacion = (valor) => {
   const texto = Array.isArray(valor)
@@ -14,25 +19,95 @@ const normalizarConfirmacion = (valor) => {
     .replace(/[\u0300-\u036f]/g, "");
 };
 
-const obtenerContexto = (queryResult, nombre) => {
-  return (queryResult.outputContexts || []).find((contexto) =>
-    contexto.name.endsWith(`/contexts/${nombre}`),
+export const procesarCambiarHorario = async (queryResult) => {
+  const contextoConfirmacion = obtenerContexto(
+    queryResult,
+    "awaiting_confirmacion",
+  );
+  const { especialidad } = contextoConfirmacion?.parameters || {};
+  const telefono =
+    contextoConfirmacion?.parameters?.telefono || queryResult.telefonoUsuario;
+
+  if (!contextoConfirmacion || !especialidad) {
+    return {
+      text: "No pude recuperar la especialidad de la cita. Inicia nuevamente la solicitud.",
+      contexts: limpiarContextos(queryResult),
+    };
+  }
+
+  return mostrarMedicos(
+    especialidad,
+    telefono,
+    queryResult,
+    obtenerDatosPaciente(queryResult),
   );
 };
 
-const limpiarContextos = (queryResult) =>
-  (queryResult.outputContexts || []).map((contexto) => ({
-    name: contexto.name,
-    lifespanCount: 0,
-  }));
+export const procesarCambiarEspecialidad = async (queryResult) => {
+  const contextoConfirmacion = obtenerContexto(
+    queryResult,
+    "awaiting_confirmacion",
+  );
+  const telefono =
+    contextoConfirmacion?.parameters?.telefono || queryResult.telefonoUsuario;
+
+  if (!contextoConfirmacion) {
+    return {
+      text: "No pude recuperar los datos de la cita. Inicia nuevamente la solicitud.",
+      contexts: limpiarContextos(queryResult),
+    };
+  }
+
+  return mostrarEspecialidades(telefono, queryResult);
+};
+
+export const procesarCancelarProceso = (queryResult) => {
+  const contextoIdentidad = obtenerContexto(queryResult, "paciente_identidad");
+  const contextosParaLimpiar = (queryResult.outputContexts || []).filter(
+    (contexto) => !contexto.name.endsWith("/contexts/paciente_identidad"),
+  );
+
+  return {
+    text: "Proceso cancelado. Necesitas algo mas?",
+    contexts: [
+      ...limpiarContextos({ outputContexts: contextosParaLimpiar }),
+      ...(contextoIdentidad
+        ? [{ ...contextoIdentidad, lifespanCount: 10 }]
+        : []),
+    ],
+  };
+};
 
 export const procesarConfirmarCita = async (queryResult) => {
-  const confirmacion = queryResult.parameters?.confirmacion
-  const contextoConfirmacion = obtenerContexto(queryResult, "awaiting_confirmacion");
+  const confirmacion = normalizarConfirmacion(
+    queryResult.parameters?.confirmacion,
+  );
+  const contextoConfirmacion = obtenerContexto(
+    queryResult,
+    "awaiting_confirmacion",
+  );
   const contextParams = contextoConfirmacion?.parameters || {};
 
+  if (!contextoConfirmacion) {
+    return {
+      text: "La confirmacion expiro. Inicia nuevamente la solicitud de cita.",
+      contexts: [],
+    };
+  }
+
   if (confirmacion === "no") {
-    return mostrarMedicos(contextParams.especialidad, contextParams.telefono, queryResult);
+    return {
+      text: "Que deseas hacer con la cita?",
+      interactive: {
+        body: "Elige una opcion para continuar.",
+        buttons: [
+          { id: "cambiar_horario", title: "Cambiar horario" },
+          { id: "cambiar_especialidad", title: "Cambiar especialidad" },
+          { id: "cancelar_proceso", title: "Cancelar proceso" },
+        ],
+      },
+      contexts: queryResult.outputContexts || [],
+    };
   }
 
   if (confirmacion !== "si") {
@@ -65,6 +140,12 @@ export const procesarConfirmarCita = async (queryResult) => {
     };
   } catch (error) {
     console.error("Error al guardar cita:", error);
+    if (error.code === "SLOT_UNAVAILABLE") {
+      return {
+        text: "Lo siento, ese horario acaba de ocuparse. Elige otro horario para continuar.",
+        contexts: [],
+      };
+    }
     return {
       text: "Ocurrio un error al registrar la cita. Por favor intentalo mas tarde.",
       contexts: limpiarContextos(queryResult),

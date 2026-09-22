@@ -1,8 +1,4 @@
-const obtenerContexto = (queryResult, nombre) => {
-  return (queryResult.outputContexts || []).find((contexto) =>
-    contexto.name.endsWith(`/contexts/${nombre}`),
-  );
-};
+import { crearContextoIdentidad, obtenerContexto } from "../context.utils.js";
 
 const obtenerNombre = (valor) => {
   if (!valor) return "";
@@ -23,7 +19,7 @@ export const procesarProporcionarDatos = async (queryResult) => {
     };
   }
 
-  if (!contextParams.horarioId) {
+  if (!contextoDatos || !contextParams.horarioId) {
     return {
       text: "No encontre el horario seleccionado. Inicia la solicitud nuevamente.",
       contexts: [],
@@ -40,14 +36,19 @@ export const procesarProporcionarDatos = async (queryResult) => {
     "Confirmas la cita? Responde Si o No.";
 
   const baseSession = contextoDatos.name.split("/contexts/")[0];
+  const contextoIdentidad = crearContextoIdentidad(queryResult, {
+    nombre_paciente: nombre,
+    dni_paciente: dni,
+  });
 
   return {
     text: resumen,
     contexts: [
       { name: contextoDatos.name, lifespanCount: 0 },
+      ...(contextoIdentidad ? [contextoIdentidad] : []),
       {
         name: `${baseSession}/contexts/awaiting_confirmacion`,
-        lifespanCount: 2,
+        lifespanCount: 5,
         parameters: {
           ...contextParams,
           nombre_paciente: nombre,

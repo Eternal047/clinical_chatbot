@@ -2,18 +2,11 @@ import {
   cancelarCita,
   obtenerCitasActivasPorTelefono,
 } from "../../api/services/citasService.js";
-
-const limpiarContextos = (queryResult) =>
-  (queryResult.outputContexts || []).map((contexto) => ({
-    name: contexto.name,
-    lifespanCount: 0,
-  }));
-
-const obtenerContexto = (queryResult, nombre) => {
-  return (queryResult.outputContexts || []).find((contexto) =>
-    contexto.name.endsWith(`/contexts/${nombre}`),
-  );
-};
+import {
+  limpiarContextos,
+  obtenerContexto,
+  obtenerSesion,
+} from "../context.utils.js";
 
 const obtenerNumero = (queryResult) => {
   const numero = queryResult.parameters?.numero_seleccionado;
@@ -54,11 +47,14 @@ export const procesarCancelarCita = async (queryResult) => {
       };
     }
 
-    const opciones = citas.map((cita) => ({ id: cita.id, resumen: resumenCita(cita) }));
+    const opciones = citas.map((cita) => ({
+      id: cita.id,
+      resumen: resumenCita(cita),
+    }));
     const lista = opciones
       .map((cita, index) => `${index + 1}. ${cita.resumen}`)
       .join("\n");
-    const baseSession = (queryResult.outputContexts?.[0]?.name || "").split("/contexts/")[0];
+    const baseSession = obtenerSesion(queryResult);
 
     return {
       text: `Tus citas activas:\n\n${lista}\n\nResponde con el numero de la cita que deseas cancelar.`,
@@ -74,8 +70,26 @@ export const procesarCancelarCita = async (queryResult) => {
   }
 
   if (intentName === "cancelar_cita - seleccionar") {
-    const contexto = obtenerContexto(queryResult, "awaiting_cancelacion_seleccion");
-    const citas = JSON.parse(contexto?.parameters?.citas || "[]");
+    const contexto = obtenerContexto(
+      queryResult,
+      "awaiting_cancelacion_seleccion",
+    );
+    if (!contexto) {
+      return {
+        text: "La seleccion de cita expiro. Inicia nuevamente la cancelacion.",
+        contexts: [],
+      };
+    }
+
+    let citas;
+    try {
+      citas = JSON.parse(contexto.parameters?.citas || "[]");
+    } catch {
+      return {
+        text: "No pude recuperar tus citas. Inicia nuevamente la cancelacion.",
+        contexts: [],
+      };
+    }
     const numero = obtenerNumero(queryResult);
 
     if (!numero || numero < 1 || numero > citas.length) {
@@ -94,18 +108,34 @@ export const procesarCancelarCita = async (queryResult) => {
         { name: contexto.name, lifespanCount: 0 },
         {
           name: `${baseSession}/contexts/awaiting_cancelacion_confirmacion`,
-          lifespanCount: 3,
-          parameters: { citaId: seleccion.id, resumen: seleccion.resumen, telefono },
+          lifespanCount: 5,
+          parameters: {
+            citaId: seleccion.id,
+            resumen: seleccion.resumen,
+            telefono,
+          },
         },
       ],
     };
   }
 
   if (intentName === "cancelar_cita - confirmar") {
-    const confirmacion = normalizarConfirmacion(queryResult.parameters?.confirmacion);
-    const contexto = obtenerContexto(queryResult, "awaiting_cancelacion_confirmacion");
+    const confirmacion = normalizarConfirmacion(
+      queryResult.parameters?.confirmacion,
+    );
+    const contexto = obtenerContexto(
+      queryResult,
+      "awaiting_cancelacion_confirmacion",
+    );
     const citaId = contexto?.parameters?.citaId;
     const resumen = contexto?.parameters?.resumen;
+
+    if (!contexto || !citaId || !resumen) {
+      return {
+        text: "La confirmacion de cancelacion expiro. Inicia nuevamente.",
+        contexts: [],
+      };
+    }
 
     if (confirmacion !== "si") {
       return {
@@ -129,5 +159,8 @@ export const procesarCancelarCita = async (queryResult) => {
     }
   }
 
-  return { text: "No pude procesar la cancelacion.", contexts: limpiarContextos(queryResult) };
+  return {
+    text: "No pude procesar la cancelacion.",
+    contexts: limpiarContextos(queryResult),
+  };
 };

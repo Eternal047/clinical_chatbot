@@ -9,7 +9,10 @@ import { procesarReprogramarCita } from "./intents/reprogramar_cita.js";
 import { procesarConsultarCitas } from "./intents/listar_citas.js"; // nuevo
 import { procesarConsultarEspecialidades } from "./intents/consultar_especialidades.js";
 import { procesarSeleccionarEspecialidadInfo } from "./intents/seleccionar_especialidad_info.js";
-
+import consultarDisponibilidad from "./intents/consultar_disponibilidad.js";
+import consultarMedicos from "./intents/consultar_medicos.js";
+import faq from "./intents/faq.js";
+import { fallbackContextual, limpiarContextos } from "./context.utils.js";
 
 // Mapeo de intents → handlers
 const intentHandlers = {
@@ -31,14 +34,46 @@ const intentHandlers = {
   consultar_citas: procesarConsultarCitas,
   consultar_especialidades: procesarConsultarEspecialidades,
   "consultar_especialidades - seleccionar": procesarSeleccionarEspecialidadInfo,
+  consultar_disponibilidad: async (queryResult) => ({
+    text: await consultarDisponibilidad(queryResult.parameters),
+    contexts: limpiarContextos(queryResult),
+  }),
+  consultar_medicos: async (queryResult) => ({
+    text: await consultarMedicos(queryResult.parameters),
+    contexts: limpiarContextos(queryResult),
+  }),
+  faq: async (queryResult) => ({
+    text: await faq(queryResult.parameters),
+    contexts: limpiarContextos(queryResult),
+  }),
+  reiniciar_conversacion: async (queryResult) => ({
+    text: "Conversacion reiniciada. Puedo ayudarte a agendar, cancelar, reprogramar o consultar una cita.",
+    contexts: limpiarContextos({
+      outputContexts: queryResult._contextosEntrantes || [],
+    }),
+  }),
 };
+
+const intentsDeNivelSuperior = new Set([
+  "solicitar_cita",
+  "cancelar_cita",
+  "reprogramar_cita",
+  "consultar_citas",
+  "consultar_especialidades",
+  "consultar_disponibilidad",
+  "consultar_medicos",
+  "faq",
+  "reiniciar_conversacion",
+]);
 
 /**
  * Extrae el número de teléfono limpio desde el session de Dialogflow.
  * Ejemplo: "whatsapp:+51961219063" → "961219063"
  */
 const extraerTelefonoDeSession = (session) => {
-  const raw = String(session || "").split("/").at(-1);
+  const raw = String(session || "")
+    .split("/")
+    .at(-1);
   const match = raw.match(/^wa_(\d{7,15})$/);
 
   // Si no viene en formato whatsapp:+..., es una sesión de prueba (consola de Dialogflow)
@@ -50,8 +85,23 @@ const extraerTelefonoDeSession = (session) => {
 };
 
 export const handleWebhook = async (req, res) => {
-  const { queryResult } = req.body;
-  const intentName = queryResult.intent.displayName;
+  const queryResult = req.body?.queryResult;
+  const detectedIntentName = queryResult?.intent?.displayName;
+
+  if (!queryResult || !detectedIntentName) {
+    return res.status(400).json({
+      fulfillmentText: "No pude interpretar la solicitud. Intenta nuevamente.",
+    });
+  }
+
+  queryResult.session = req.body.session;
+  const contextosEntrantes = queryResult.outputContexts || [];
+  queryResult._contextosEntrantes = contextosEntrantes;
+  const intentName = detectedIntentName;
+  if (intentsDeNivelSuperior.has(intentName)) {
+    queryResult.outputContexts = [];
+  }
+
   const handler = intentHandlers[intentName];
 
   // 🔍 Log de depuración
@@ -64,7 +114,10 @@ export const handleWebhook = async (req, res) => {
   if (!handler) {
     console.warn("⚠️ No se encontró handler para el intent:", intentName);
     return res.json({
-      fulfillmentText: "No tengo una respuesta para esta solicitud.",
+      fulfillmentText: fallbackContextual({
+        outputContexts: contextosEntrantes,
+      }),
+      outputContexts: contextosEntrantes,
     });
   }
 
@@ -80,13 +133,19 @@ export const handleWebhook = async (req, res) => {
     });
 
     return res.json({
-      fulfillmentText: result.text,
-      outputContexts: result.contexts || [],
+      fulfillmentText: result?.text || fallbackContextual(queryResult),
+      outputContexts: result?.contexts || [],
+      ...(result?.interactive
+        ? { payload: { interactive: result.interactive } }
+        : {}),
     });
   } catch (error) {
     console.error(`💥 Error en intent ${intentName}:`, error);
     return res.json({
-      fulfillmentText: "Error interno. Por favor inténtalo más tarde.",
+      fulfillmentText: fallbackContextual({
+        outputContexts: contextosEntrantes,
+      }),
+      outputContexts: limpiarContextos({ outputContexts: contextosEntrantes }),
     });
   }
 };

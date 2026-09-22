@@ -1,0 +1,1668 @@
+{
+  "metrics": {
+    "total_conversations": 30,
+    "total_turns": 62,
+    "turnos_nlu_evaluados": 60,
+    "turnos_evento_excluidos_nlu": 2,
+    "intent_accuracy": 0.8166666666666667,
+    "entity_extraction_accuracy": 0.8936170212765957,
+    "fallback_recall_en_casos_marcados": null,
+    "tasa_falsos_fallback_en_casos_validos": 0.08333333333333333,
+    "flow_success_rate": 0.6333333333333333,
+    "nota_flujo": "Los turnos de boton se excluyen de NLU y se validan en una prueba separada contra Meta/webhook."
+  },
+  "errors": [
+    {
+      "conversation_id": "SOL-04",
+      "turn": 6,
+      "tipo_error": "intent_y_entidades",
+      "user_utterance": "2",
+      "expected_intent": "seleccionar_medico",
+      "actual_intent": "fallback",
+      "expected_entities": {
+        "numero_seleccionado": 2
+      },
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "SOL-05",
+      "turn": 2,
+      "tipo_error": "entidades",
+      "user_utterance": "la segunda opción",
+      "expected_intent": "seleccionar_medico",
+      "actual_intent": "seleccionar_medico",
+      "expected_entities": {
+        "numero_seleccionado": null
+      },
+      "actual_entities": {
+        "numero_seleccionado": ""
+      }
+    },
+    {
+      "conversation_id": "REP-02",
+      "turn": 3,
+      "tipo_error": "intent_y_entidades",
+      "user_utterance": "2",
+      "expected_intent": "reprogramar_cita - horario",
+      "actual_intent": "fallback",
+      "expected_entities": {
+        "numero_seleccionado": 2
+      },
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "REP-02",
+      "turn": 4,
+      "tipo_error": "intent_y_entidades",
+      "user_utterance": "No, déjala como está.",
+      "expected_intent": "reprogramar_cita - confirmar",
+      "actual_intent": "fallback",
+      "expected_entities": {
+        "confirmacion": "no"
+      },
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "REP-05",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "No podré asistir, necesito cambiar mi cita.",
+      "expected_intent": "reprogramar_cita",
+      "actual_intent": "cancelar_cita",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "FAQ-01",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "Ayuda, ¿qué puedo hacer a través de este WhatsApp?",
+      "expected_intent": "faq",
+      "actual_intent": "faq_horario",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "FAQ-03",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "¿De qué forma puedo cancelar una cita?",
+      "expected_intent": "faq",
+      "actual_intent": "cancelar_cita",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "FAQ-04",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "¿Es posible cambiar una cita que ya tengo agendada?",
+      "expected_intent": "faq",
+      "actual_intent": "consultar_citas",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "FAQ-05",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "No entiendo qué hacer, ¿me puedes ayudar?",
+      "expected_intent": "faq",
+      "actual_intent": "fallback",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "MED-04",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "¿Podrías decirme qué médicos están registrados en el sistema?",
+      "expected_intent": "consultar_medicos",
+      "actual_intent": "fallback",
+      "expected_entities": {},
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "DIS-02",
+      "turn": 1,
+      "tipo_error": "intent_y_entidades",
+      "user_utterance": "Quisiera saber en qué momentos atienden Alergología.",
+      "expected_intent": "consultar_especialidades",
+      "actual_intent": "faq_horario",
+      "expected_entities": {
+        "especialidad": "Alergología"
+      },
+      "actual_entities": {}
+    },
+    {
+      "conversation_id": "DIS-03",
+      "turn": 1,
+      "tipo_error": "intent",
+      "user_utterance": "¿Tienen algún espacio disponible para Psicología?",
+      "expected_intent": "consultar_disponibilidad",
+      "actual_intent": "consultar_especialidades",
+      "expected_entities": {
+        "especialidad": "Psicología"
+      },
+      "actual_entities": {
+        "especialidad": "Psicología"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "conversation_id": "SOL-01",
+      "primary_category": "solicitar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Hola, necesito programar una cita para Dermatología.",
+          "expected_intent": "solicitar_cita",
+          "actual_intent": "solicitar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Dermatología"
+          },
+          "actual_entities": {
+            "especialidad": "Dermatología",
+            "number": "",
+            "last-name": ""
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Dermatología:\n\n1. Dr/a. Dr. Cesar Augusto Hernández Bazán - LUNES 17:00-20:00\n2. Dr/a. Dr. Cesar Augusto Hernández Bazán - MARTES 17:00-20:00\n3. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 11:00-13:00\n4. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 17:00-20:00\n\nResponde con el numero del horario que prefieres."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "seleccionar_medico",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {
+            "numero_seleccionado": 2
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado:\nDr/a. Dr. Cesar Augusto Hernández Bazán\nMARTES de 17:00 a 20:00\n\nAhora necesito tu nombre completo y DNI."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Valeria Cusihuamán, DNI 71538294",
+          "expected_intent": "proporcionar_datos",
+          "actual_intent": "proporcionar_datos",
+          "intent_correct": true,
+          "expected_entities": {
+            "nombre_paciente": "Valeria Cusihuamán",
+            "dni_paciente": "71538294"
+          },
+          "actual_entities": {
+            "nombre_paciente": {
+              "name": "Valeria Cusihuamán"
+            },
+            "dni_paciente": 71538294
+          },
+          "entities_correct": 2,
+          "entities_total": 2,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Resumen de tu cita:\n- Especialidad: Dermatología\n- Medico: Dr/a. Dr. Cesar Augusto Hernández Bazán\n- Horario: MARTES de 17:00 a 20:00\n- Paciente: Valeria Cusihuamán\n- DNI: 71538294\n\nConfirmas la cita? Responde Si o No."
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "Sí, por favor confirma la cita.",
+          "expected_intent": "confirmar_cita",
+          "actual_intent": "confirmar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "si"
+          },
+          "actual_entities": {
+            "confirmacion": "si"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cita registrada con exito. Gracias por tu preferencia, Valeria Cusihuamán. Te esperamos en la fecha y hora acordadas."
+        }
+      ]
+    },
+    {
+      "conversation_id": "SOL-02",
+      "primary_category": "solicitar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "change_specialty_options",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Quisiera agendar una cita de Alergología.",
+          "expected_intent": "solicitar_cita",
+          "actual_intent": "solicitar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Alergología"
+          },
+          "actual_entities": {
+            "number": "",
+            "especialidad": "Alergología",
+            "last-name": ""
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Alergología:\n\n1. Dr/a. Dr. Teófilo Quispe Chullo - MIERCOLES 09:00-12:00\n\nResponde con el numero del horario que prefieres."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "1",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "seleccionar_medico",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 1
+          },
+          "actual_entities": {
+            "numero_seleccionado": 1
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado:\nDr/a. Dr. Teófilo Quispe Chullo\nMIERCOLES de 09:00 a 12:00\n\nAhora necesito tu nombre completo y DNI."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Renzo Huamán, mi DNI es 48267915.",
+          "expected_intent": "proporcionar_datos",
+          "actual_intent": "proporcionar_datos",
+          "intent_correct": true,
+          "expected_entities": {
+            "nombre_paciente": "Renzo Huamán",
+            "dni_paciente": "48267915"
+          },
+          "actual_entities": {
+            "dni_paciente": 48267915,
+            "nombre_paciente": {
+              "name": "Renzo Huamán"
+            }
+          },
+          "entities_correct": 2,
+          "entities_total": 2,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Resumen de tu cita:\n- Especialidad: Alergología\n- Medico: Dr/a. Dr. Teófilo Quispe Chullo\n- Horario: MIERCOLES de 09:00 a 12:00\n- Paciente: Renzo Huamán\n- DNI: 48267915\n\nConfirmas la cita? Responde Si o No."
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "No, aún no estoy seguro de confirmar.",
+          "expected_intent": "confirmar_cita",
+          "actual_intent": "confirmar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "no"
+          },
+          "actual_entities": {
+            "confirmacion": "no"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Que deseas hacer con la cita?"
+        },
+        {
+          "turn_number": 5,
+          "input_type": "event",
+          "user_utterance": "cambiar especialidad",
+          "expected_intent": "cambiar_especialidad",
+          "actual_intent": "event:cambiar_especialidad",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": false,
+          "note": "Turno de boton Meta excluido de NLU; requiere prueba del webhook Meta."
+        }
+      ]
+    },
+    {
+      "conversation_id": "SOL-03",
+      "primary_category": "solicitar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Deseo una consulta en Medicina General.",
+          "expected_intent": "solicitar_cita",
+          "actual_intent": "solicitar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Medicina General"
+          },
+          "actual_entities": {
+            "last-name": "",
+            "especialidad": "Medicina General",
+            "number": ""
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Medicina General:\n\n1. Dr/a. Dr. Mario Javier López Veliz - LUNES 08:00-20:00\n2. Dr/a. Dr. Mario Javier López Veliz - MIERCOLES 08:00-20:00\n3. Dr/a. Dr. Mario Javier López Veliz - JUEVES 08:00-20:00\n4. Dr/a. Dra. Alejandra Luisa Salazar Bazan - MIERCOLES 08:00-20:00\n5. Dr/a. Dra. Alejandra Luisa Salazar Bazan - VIERNES 08:00-20:00\n6. Dr/a. Dra. Alejandra Luisa Salazar Bazan - SABADO 08:00-20:00\n7. Dr/a. Dra. Valeria Adrianzén Antonio - LUNES 08:00-20:00\n8. Dr/a. Dra. Valeria Adrianzén Antonio - MARTES 08:00-20:00\n9. Dr/a. Dra. Valeria Adrianzén Antonio - SABADO 08:00-20:00\n\nResponde con el numero del horario que prefieres."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "3",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "seleccionar_medico",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 3
+          },
+          "actual_entities": {
+            "numero_seleccionado": 3
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado:\nDr/a. Dr. Mario Javier López Veliz\nJUEVES de 08:00 a 20:00\n\nAhora necesito tu nombre completo y DNI."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Camila Rojas, 52984671",
+          "expected_intent": "proporcionar_datos",
+          "actual_intent": "proporcionar_datos",
+          "intent_correct": true,
+          "expected_entities": {
+            "nombre_paciente": "Camila Rojas",
+            "dni_paciente": "52984671"
+          },
+          "actual_entities": {
+            "nombre_paciente": {
+              "name": "Camila Rojas"
+            },
+            "dni_paciente": 52984671
+          },
+          "entities_correct": 2,
+          "entities_total": 2,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Resumen de tu cita:\n- Especialidad: Medicina General\n- Medico: Dr/a. Dr. Mario Javier López Veliz\n- Horario: JUEVES de 08:00 a 20:00\n- Paciente: Camila Rojas\n- DNI: 52984671\n\nConfirmas la cita? Responde Si o No."
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "Está bien así, confirmo la cita.",
+          "expected_intent": "confirmar_cita",
+          "actual_intent": "confirmar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "si"
+          },
+          "actual_entities": {
+            "confirmacion": "si"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cita registrada con exito. Gracias por tu preferencia, Camila Rojas. Te esperamos en la fecha y hora acordadas."
+        }
+      ]
+    },
+    {
+      "conversation_id": "SOL-04",
+      "primary_category": "solicitar_cita",
+      "subcategory": null,
+      "case_type": "interruption",
+      "border_case_type": "change_schedule",
+      "expected_final_outcome": "new_schedule_selected",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito sacar una cita en Odontología.",
+          "expected_intent": "solicitar_cita",
+          "actual_intent": "solicitar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Odontología"
+          },
+          "actual_entities": {
+            "especialidad": "Odontología",
+            "number": "",
+            "last-name": ""
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Odontología:\n\n1. Dr/a. Dr. Carlos Alva Cabrera - LUNES 14:00-20:00\n2. Dr/a. Dr. Carlos Alva Cabrera - MARTES 08:00-14:00\n3. Dr/a. Dr. Carlos Alva Cabrera - MIERCOLES 14:00-20:00\n4. Dr/a. Dr. Carlos Alva Cabrera - JUEVES 08:00-14:00\n5. Dr/a. Dr. Carlos Alva Cabrera - VIERNES 14:00-20:00\n6. Dr/a. Dr. Carlos Alva Cabrera - SABADO 08:00-14:00\n7. Dr/a. Dr. Francisco Durand Calderon - LUNES 08:00-14:00\n8. Dr/a. Dr. Francisco Durand Calderon - MARTES 14:00-20:00\n9. Dr/a. Dr. Francisco Durand Calderon - MIERCOLES 08:00-14:00\n10. Dr/a. Dr. Francisco Durand Calderon - JUEVES 14:00-20:00\n11. Dr/a. Dr. Francisco Durand Calderon - VIERNES 08:00-14:00\n12. Dr/a. Dr. Francisco Durand Calderon - SABADO 14:00-20:00\n13. Dr/a. Dra. Dalmat Geremy Noa Farfán - MARTES 09:00-19:00\n14. Dr/a. Dra. Dalmat Geremy Noa Farfán - JUEVES 09:00-19:00\n15. Dr/a. Dra. Dalmat Geremy Noa Farfán - SABADO 09:00-19:00\n16. Dr/a. Dra. Nathaly Molina Soto - LUNES 09:00-20:00\n17. Dr/a. Dra. Nathaly Molina Soto - MARTES 14:00-20:00\n18. Dr/a. Dra. Nathaly Molina Soto - MIERCOLES 09:00-20:00\n19. Dr/a. Dra. Nathaly Molina Soto - JUEVES 14:00-20:00\n20. Dr/a. Dra. Nathaly Molina Soto - VIERNES 14:00-20:00\n\nResponde con el numero del horario que prefieres."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "1",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "seleccionar_medico",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 1
+          },
+          "actual_entities": {
+            "numero_seleccionado": 1
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado:\nDr/a. Dr. Carlos Alva Cabrera\nLUNES de 14:00 a 20:00\n\nAhora necesito tu nombre completo y DNI."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Sebastián Quispe, DNI 69123847",
+          "expected_intent": "proporcionar_datos",
+          "actual_intent": "proporcionar_datos",
+          "intent_correct": true,
+          "expected_entities": {
+            "nombre_paciente": "Sebastián Quispe",
+            "dni_paciente": "69123847"
+          },
+          "actual_entities": {
+            "dni_paciente": 69123847,
+            "nombre_paciente": {
+              "name": "Sebastián Quispe"
+            }
+          },
+          "entities_correct": 2,
+          "entities_total": 2,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Resumen de tu cita:\n- Especialidad: Odontología\n- Medico: Dr/a. Dr. Carlos Alva Cabrera\n- Horario: LUNES de 14:00 a 20:00\n- Paciente: Sebastián Quispe\n- DNI: 69123847\n\nConfirmas la cita? Responde Si o No."
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "No, ese horario no me conviene.",
+          "expected_intent": "confirmar_cita",
+          "actual_intent": "confirmar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "no"
+          },
+          "actual_entities": {
+            "confirmacion": "no"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Que deseas hacer con la cita?"
+        },
+        {
+          "turn_number": 5,
+          "input_type": "event",
+          "user_utterance": "cambiar horario",
+          "expected_intent": "cambiar_horario",
+          "actual_intent": "event:cambiar_horario",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": false,
+          "note": "Turno de boton Meta excluido de NLU; requiere prueba del webhook Meta."
+        },
+        {
+          "turn_number": 6,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "fallback",
+          "intent_correct": false,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": true,
+          "nlu_evaluated": true,
+          "fulfillment_text": "¿Cómo?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "SOL-05",
+      "primary_category": "solicitar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "invalid_schedule_selection",
+      "expected_final_outcome": "invalid_number_message",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Quisiera programar una cita de Psicología.",
+          "expected_intent": "solicitar_cita",
+          "actual_intent": "solicitar_cita",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Psicología"
+          },
+          "actual_entities": {
+            "especialidad": "Psicología",
+            "number": "",
+            "last-name": ""
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Psicología:\n\n1. Dr/a. Dra. Ana Wong - LUNES 08:00-14:00\n2. Dr/a. Dra. Ana Wong - MARTES 08:00-20:00\n3. Dr/a. Dra. Ana Wong - MIERCOLES 08:00-14:00\n4. Dr/a. Dra. Ana Wong - JUEVES 08:00-14:00\n5. Dr/a. Dra. Ana Wong - VIERNES 08:00-14:00\n\nResponde con el numero del horario que prefieres."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "la segunda opción",
+          "expected_intent": "seleccionar_medico",
+          "actual_intent": "seleccionar_medico",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": null
+          },
+          "actual_entities": {
+            "numero_seleccionado": ""
+          },
+          "entities_correct": 0,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Que horario seleccionaras"
+        }
+      ]
+    },
+    {
+      "conversation_id": "CAN-01",
+      "primary_category": "cancelar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito cancelar una cita.",
+          "expected_intent": "cancelar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Teófilo Quispe Chullo (Alergología) - MIERCOLES 09:00-12:00\n2. 22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n3. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n4. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n5. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n6. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n7. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n8. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "1",
+          "expected_intent": "cancelar_cita - seleccionar",
+          "actual_intent": "cancelar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 1
+          },
+          "actual_entities": {
+            "numero_seleccionado": 1
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado la cita:\n22/9/2026 - Dr/a. Dr. Teófilo Quispe Chullo (Alergología) - MIERCOLES 09:00-12:00\n\nConfirmas que deseas cancelarla? Responde Si o No."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Sí, procede con la cancelación.",
+          "expected_intent": "cancelar_cita - confirmar",
+          "actual_intent": "cancelar_cita - confirmar",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "si"
+          },
+          "actual_entities": {
+            "confirmacion": "si"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cita cancelada con exito:\n22/9/2026 - Dr/a. Dr. Teófilo Quispe Chullo (Alergología) - MIERCOLES 09:00-12:00\nNecesitas algo mas?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "CAN-02",
+      "primary_category": "cancelar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "cancellation_rejected",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "No voy a poder asistir a mi cita, quisiera cancelarla.",
+          "expected_intent": "cancelar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n2. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n3. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n4. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n5. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n7. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "cancelar_cita - seleccionar",
+          "actual_intent": "cancelar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {
+            "numero_seleccionado": 2
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado la cita:\n22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n\nConfirmas que deseas cancelarla? Responde Si o No."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "No, mejor no la canceles.",
+          "expected_intent": "cancelar_cita - confirmar",
+          "actual_intent": "cancelar_cita - confirmar",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "no"
+          },
+          "actual_entities": {
+            "confirmacion": "no"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cancelacion no realizada. Necesitas algo mas?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "CAN-03",
+      "primary_category": "cancelar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "invalid_selection",
+      "expected_final_outcome": "invalid_number_message",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Por favor, cancela mi cita.",
+          "expected_intent": "cancelar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n2. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n3. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n4. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n5. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n7. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "9",
+          "expected_intent": "cancelar_cita - seleccionar",
+          "actual_intent": "cancelar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 9
+          },
+          "actual_entities": {
+            "numero_seleccionado": 9
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Numero invalido. Elige un numero de la lista."
+        }
+      ]
+    },
+    {
+      "conversation_id": "CAN-04",
+      "primary_category": "cancelar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "no_active_appointments",
+      "expected_final_outcome": "no_active_appointments",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Quisiera cancelar mi cita.",
+          "expected_intent": "cancelar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n2. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n3. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n4. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n5. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n7. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        }
+      ]
+    },
+    {
+      "conversation_id": "CAN-05",
+      "primary_category": "cancelar_cita",
+      "subcategory": null,
+      "case_type": "interruption",
+      "border_case_type": "expired_confirmation",
+      "expected_final_outcome": "success_or_expired_context",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Deseo cancelar una cita.",
+          "expected_intent": "cancelar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n2. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n3. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n4. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n5. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n7. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "1",
+          "expected_intent": "cancelar_cita - seleccionar",
+          "actual_intent": "cancelar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 1
+          },
+          "actual_entities": {
+            "numero_seleccionado": 1
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado la cita:\n22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\n\nConfirmas que deseas cancelarla? Responde Si o No."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "Claro que sí.",
+          "expected_intent": "cancelar_cita - confirmar",
+          "actual_intent": "cancelar_cita - confirmar",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "si"
+          },
+          "actual_entities": {
+            "confirmacion": "si"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cita cancelada con exito:\n22/9/2026 - Dr/a. Dr. Carlos Ruperto Vera Quispe (Imagenología (Rayos X)) - MARTES 08:00-20:00\nNecesitas algo mas?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "REP-01",
+      "primary_category": "reprogramar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito reprogramar una cita.",
+          "expected_intent": "reprogramar_cita",
+          "actual_intent": "reprogramar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - MIERCOLES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas reprogramar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "reprogramar_cita - seleccionar",
+          "actual_intent": "reprogramar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {
+            "numero_seleccionado": 2
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles para reprogramar:\n\n1. LUNES 08:00-14:00\n2. MARTES 08:00-14:00\n3. JUEVES 08:00-14:00\n4. VIERNES 08:00-14:00\n\nResponde con el numero del nuevo horario."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "3",
+          "expected_intent": "reprogramar_cita - horario",
+          "actual_intent": "reprogramar_cita - horario",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 3
+          },
+          "actual_entities": {
+            "numero_seleccionado": 3
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Has seleccionado el nuevo horario: JUEVES 08:00-14:00\n\nConfirmas la reprogramacion? Responde Si o No."
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "Sí, confirma el nuevo horario.",
+          "expected_intent": "reprogramar_cita - confirmar",
+          "actual_intent": "reprogramar_cita - confirmar",
+          "intent_correct": true,
+          "expected_entities": {
+            "confirmacion": "si"
+          },
+          "actual_entities": {
+            "confirmacion": "si"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Cita reprogramada con exito. Nuevo horario: JUEVES 08:00-14:00"
+        }
+      ]
+    },
+    {
+      "conversation_id": "REP-02",
+      "primary_category": "reprogramar_cita",
+      "subcategory": null,
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "reschedule_rejected",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Podrías ayudarme a cambiar el horario de una cita?",
+          "expected_intent": "reprogramar_cita",
+          "actual_intent": "reprogramar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas reprogramar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "1",
+          "expected_intent": "reprogramar_cita - seleccionar",
+          "actual_intent": "reprogramar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 1
+          },
+          "actual_entities": {
+            "numero_seleccionado": 1
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "No hay otros horarios disponibles para ese medico."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "reprogramar_cita - horario",
+          "actual_intent": "fallback",
+          "intent_correct": false,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": true,
+          "nlu_evaluated": true,
+          "fulfillment_text": "¿Decías?"
+        },
+        {
+          "turn_number": 4,
+          "input_type": "text",
+          "user_utterance": "No, déjala como está.",
+          "expected_intent": "reprogramar_cita - confirmar",
+          "actual_intent": "fallback",
+          "intent_correct": false,
+          "expected_entities": {
+            "confirmacion": "no"
+          },
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": true,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Ups, no he entendido a que te refieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "REP-03",
+      "primary_category": "reprogramar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "invalid_appointment_selection",
+      "expected_final_outcome": "invalid_number_message",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito cambiar mi cita a otro horario.",
+          "expected_intent": "reprogramar_cita",
+          "actual_intent": "reprogramar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas reprogramar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "8",
+          "expected_intent": "reprogramar_cita - seleccionar",
+          "actual_intent": "reprogramar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 8
+          },
+          "actual_entities": {
+            "numero_seleccionado": 8
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Numero invalido. Elige un numero de la lista."
+        }
+      ]
+    },
+    {
+      "conversation_id": "REP-04",
+      "primary_category": "reprogramar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "invalid_schedule_selection",
+      "expected_final_outcome": "invalid_number_message",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Quiero reprogramar mi cita.",
+          "expected_intent": "reprogramar_cita",
+          "actual_intent": "reprogramar_cita",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas reprogramar."
+        },
+        {
+          "turn_number": 2,
+          "input_type": "text",
+          "user_utterance": "2",
+          "expected_intent": "reprogramar_cita - seleccionar",
+          "actual_intent": "reprogramar_cita - seleccionar",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 2
+          },
+          "actual_entities": {
+            "numero_seleccionado": 2
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles para reprogramar:\n\n1. LUNES 08:00-14:00\n2. MARTES 08:00-14:00\n3. MIERCOLES 08:00-14:00\n4. VIERNES 08:00-14:00\n\nResponde con el numero del nuevo horario."
+        },
+        {
+          "turn_number": 3,
+          "input_type": "text",
+          "user_utterance": "10",
+          "expected_intent": "reprogramar_cita - horario",
+          "actual_intent": "reprogramar_cita - horario",
+          "intent_correct": true,
+          "expected_entities": {
+            "numero_seleccionado": 10
+          },
+          "actual_entities": {
+            "numero_seleccionado": 10
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Numero invalido. Elige un numero de la lista."
+        }
+      ]
+    },
+    {
+      "conversation_id": "REP-05",
+      "primary_category": "reprogramar_cita",
+      "subcategory": null,
+      "case_type": "border",
+      "border_case_type": "no_active_appointments",
+      "expected_final_outcome": "no_active_appointments",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "No podré asistir, necesito cambiar mi cita.",
+          "expected_intent": "reprogramar_cita",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        }
+      ]
+    },
+    {
+      "conversation_id": "FAQ-01",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_faq",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Ayuda, ¿qué puedo hacer a través de este WhatsApp?",
+          "expected_intent": "faq",
+          "actual_intent": "faq_horario",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Nuestro horario es de 8:00 am a 8:00 pm, de lunes a sábado. No abrimos los domingos."
+        }
+      ]
+    },
+    {
+      "conversation_id": "FAQ-02",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_faq",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿En qué horario atienden?",
+          "expected_intent": "faq_horario",
+          "actual_intent": "faq_horario",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Estamos disponibles de 8:00 am a 8:00 pm, todos los días excepto domingo."
+        }
+      ]
+    },
+    {
+      "conversation_id": "FAQ-03",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_faq",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿De qué forma puedo cancelar una cita?",
+          "expected_intent": "faq",
+          "actual_intent": "cancelar_cita",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nResponde con el numero de la cita que deseas cancelar."
+        }
+      ]
+    },
+    {
+      "conversation_id": "FAQ-04",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_faq",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Es posible cambiar una cita que ya tengo agendada?",
+          "expected_intent": "faq",
+          "actual_intent": "consultar_citas",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Estas son tus citas activas:\n\n1. 22/9/2026 - Dr/a. Dr. Darío Rodriguez Escalante (Medicina del Estilo de Vida) - MARTES 08:00-10:00\n2. 22/9/2026 - Dr/a. Dr. Sebastian Davila Merzthal (Neumología) - JUEVES 08:00-14:00\n3. 22/9/2026 - Dr/a. Nutricionista Jessica Díaz C. (Nutrición) - JUEVES 09:00-15:00\n4. 22/9/2026 - Dr/a. Dr. Carlos Alva Cabrera (Odontología) - LUNES 14:00-20:00\n5. 22/9/2026 - Dr/a. Dr. Cesar Augusto Hernández Bazán (Dermatología) - MARTES 17:00-20:00\n6. 22/9/2026 - Dr/a. Dr. Mario Javier López Veliz (Medicina General) - JUEVES 08:00-20:00\n\nNecesitas algo mas?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "FAQ-05",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_faq",
+      "case_type": "border",
+      "border_case_type": "unknown_request",
+      "expected_final_outcome": "success_or_fallback",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "No entiendo qué hacer, ¿me puedes ayudar?",
+          "expected_intent": "faq",
+          "actual_intent": "fallback",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": true,
+          "nlu_evaluated": true,
+          "fulfillment_text": "¿Decías?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "MED-01",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_medicos",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Qué doctores atienden en Dermatología?",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Dermatología"
+          },
+          "actual_entities": {
+            "especialidad": "Dermatología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Dermatología:\n\n1. Dr/a. Dr. Cesar Augusto Hernández Bazán - LUNES 17:00-20:00\n2. Dr/a. Dr. Cesar Augusto Hernández Bazán - MARTES 17:00-20:00\n3. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 11:00-13:00\n4. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 17:00-20:00\n\nResponde con el numero del horario que prefieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "MED-02",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_medicos",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito la lista de médicos de Medicina General.",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Medicina General"
+          },
+          "actual_entities": {
+            "especialidad": "Medicina General"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Medicina General:\n\n1. Dr/a. Dr. Mario Javier López Veliz - LUNES 08:00-20:00\n2. Dr/a. Dr. Mario Javier López Veliz - MIERCOLES 08:00-20:00\n3. Dr/a. Dr. Mario Javier López Veliz - JUEVES 08:00-20:00\n4. Dr/a. Dra. Alejandra Luisa Salazar Bazan - MIERCOLES 08:00-20:00\n5. Dr/a. Dra. Alejandra Luisa Salazar Bazan - VIERNES 08:00-20:00\n6. Dr/a. Dra. Alejandra Luisa Salazar Bazan - SABADO 08:00-20:00\n7. Dr/a. Dra. Valeria Adrianzén Antonio - LUNES 08:00-20:00\n8. Dr/a. Dra. Valeria Adrianzén Antonio - MARTES 08:00-20:00\n9. Dr/a. Dra. Valeria Adrianzén Antonio - SABADO 08:00-20:00\n\nResponde con el numero del horario que prefieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "MED-03",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_especialidades",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Qué médicos tienen turnos disponibles en Odontología?",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Odontología"
+          },
+          "actual_entities": {
+            "especialidad": "Odontología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Odontología:\n\n1. Dr/a. Dr. Carlos Alva Cabrera - LUNES 14:00-20:00\n2. Dr/a. Dr. Carlos Alva Cabrera - MARTES 08:00-14:00\n3. Dr/a. Dr. Carlos Alva Cabrera - MIERCOLES 14:00-20:00\n4. Dr/a. Dr. Carlos Alva Cabrera - JUEVES 08:00-14:00\n5. Dr/a. Dr. Carlos Alva Cabrera - VIERNES 14:00-20:00\n6. Dr/a. Dr. Carlos Alva Cabrera - SABADO 08:00-14:00\n7. Dr/a. Dr. Francisco Durand Calderon - LUNES 08:00-14:00\n8. Dr/a. Dr. Francisco Durand Calderon - MARTES 14:00-20:00\n9. Dr/a. Dr. Francisco Durand Calderon - MIERCOLES 08:00-14:00\n10. Dr/a. Dr. Francisco Durand Calderon - JUEVES 14:00-20:00\n11. Dr/a. Dr. Francisco Durand Calderon - VIERNES 08:00-14:00\n12. Dr/a. Dr. Francisco Durand Calderon - SABADO 14:00-20:00\n13. Dr/a. Dra. Dalmat Geremy Noa Farfán - MARTES 09:00-19:00\n14. Dr/a. Dra. Dalmat Geremy Noa Farfán - JUEVES 09:00-19:00\n15. Dr/a. Dra. Dalmat Geremy Noa Farfán - SABADO 09:00-19:00\n16. Dr/a. Dra. Nathaly Molina Soto - LUNES 09:00-20:00\n17. Dr/a. Dra. Nathaly Molina Soto - MARTES 14:00-20:00\n18. Dr/a. Dra. Nathaly Molina Soto - MIERCOLES 09:00-20:00\n19. Dr/a. Dra. Nathaly Molina Soto - JUEVES 14:00-20:00\n20. Dr/a. Dra. Nathaly Molina Soto - VIERNES 14:00-20:00\n\nResponde con el numero del horario que prefieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "MED-04",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_medicos",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Podrías decirme qué médicos están registrados en el sistema?",
+          "expected_intent": "consultar_medicos",
+          "actual_intent": "fallback",
+          "intent_correct": false,
+          "expected_entities": {},
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": true,
+          "nlu_evaluated": true,
+          "fulfillment_text": "¿Cómo?"
+        }
+      ]
+    },
+    {
+      "conversation_id": "MED-05",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_medicos",
+      "case_type": "border",
+      "border_case_type": "unknown_specialty",
+      "expected_final_outcome": "no_results",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Hay médicos disponibles en Cardiología?",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Cardiología"
+          },
+          "actual_entities": {
+            "especialidad": "Cardiología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "No hay horarios disponibles para Cardiología."
+        }
+      ]
+    },
+    {
+      "conversation_id": "DIS-01",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_disponibilidad",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Qué horarios tienen libres para Dermatología?",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Dermatología"
+          },
+          "actual_entities": {
+            "especialidad": "Dermatología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Dermatología:\n\n1. Dr/a. Dr. Cesar Augusto Hernández Bazán - LUNES 17:00-20:00\n2. Dr/a. Dr. Cesar Augusto Hernández Bazán - MARTES 17:00-20:00\n3. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 11:00-13:00\n4. Dr/a. Dr. Cesar Augusto Hernández Bazán - MIERCOLES 17:00-20:00\n\nResponde con el numero del horario que prefieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "DIS-02",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_disponibilidad",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Quisiera saber en qué momentos atienden Alergología.",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "faq_horario",
+          "intent_correct": false,
+          "expected_entities": {
+            "especialidad": "Alergología"
+          },
+          "actual_entities": {},
+          "entities_correct": 0,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Estamos disponibles de 8:00 am a 8:00 pm, todos los días excepto domingo."
+        }
+      ]
+    },
+    {
+      "conversation_id": "DIS-03",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_especialidades",
+      "case_type": "normal",
+      "border_case_type": null,
+      "expected_final_outcome": "success",
+      "conversation_success": false,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Tienen algún espacio disponible para Psicología?",
+          "expected_intent": "consultar_disponibilidad",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": false,
+          "expected_entities": {
+            "especialidad": "Psicología"
+          },
+          "actual_entities": {
+            "especialidad": "Psicología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Horarios disponibles en Psicología:\n\n1. Dr/a. Dra. Ana Wong - LUNES 08:00-14:00\n2. Dr/a. Dra. Ana Wong - MARTES 08:00-20:00\n3. Dr/a. Dra. Ana Wong - MIERCOLES 08:00-14:00\n4. Dr/a. Dra. Ana Wong - JUEVES 08:00-14:00\n5. Dr/a. Dra. Ana Wong - VIERNES 08:00-14:00\n\nResponde con el numero del horario que prefieres."
+        }
+      ]
+    },
+    {
+      "conversation_id": "DIS-04",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_disponibilidad",
+      "case_type": "border",
+      "border_case_type": "missing_specialty",
+      "expected_final_outcome": "missing_specialty_message",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "Necesito ver los horarios que tienen disponibles.",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {},
+          "actual_entities": {
+            "especialidad": ""
+          },
+          "entities_correct": 0,
+          "entities_total": 0,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "Estas son las especialidades disponibles en la clinica:\n- Alergología\n- Dermatología\n- Ginecología\n- Imagenología (Rayos X)\n- Medicina del Estilo de Vida\n- Medicina General\n- Neumología\n- Nutrición\n- Odontología\n- Psicología\n- Terapia de Lenguaje\n- Terapia Física y Rehabilitación\n- Traumatología\n\nSi quieres conocer los horarios de alguna, solo dime el nombre. Si no, dime en que mas te puedo ayudar."
+        }
+      ]
+    },
+    {
+      "conversation_id": "DIS-05",
+      "primary_category": "consultas_frecuentes",
+      "subcategory": "consultar_disponibilidad",
+      "case_type": "border",
+      "border_case_type": "unknown_specialty",
+      "expected_final_outcome": "no_results",
+      "conversation_success": true,
+      "turns": [
+        {
+          "turn_number": 1,
+          "input_type": "text",
+          "user_utterance": "¿Qué horarios manejan para Cardiología?",
+          "expected_intent": "consultar_especialidades",
+          "actual_intent": "consultar_especialidades",
+          "intent_correct": true,
+          "expected_entities": {
+            "especialidad": "Cardiología"
+          },
+          "actual_entities": {
+            "especialidad": "Cardiología"
+          },
+          "entities_correct": 1,
+          "entities_total": 1,
+          "expected_fallback": false,
+          "actual_fallback": false,
+          "nlu_evaluated": true,
+          "fulfillment_text": "No hay horarios disponibles para Cardiología."
+        }
+      ]
+    }
+  ]
+}

@@ -25,31 +25,52 @@ export const crearCita = async ({
     );
   }
 
-  const horario = await prisma.horario.findUnique({ where: { id: horarioId } });
-  if (!horario) {
-    throw new Error("Horario no encontrado");
-  }
-
   const fechaCita = normalizarFecha(fecha);
-  const citasActivas = await prisma.cita.count({
-    where: { horarioId, fecha: fechaCita, estado: "ACTIVA" },
-  });
+  try {
+    return await prisma.$transaction(
+      async (tx) => {
+        const horariosBloqueados = await tx.$queryRaw`
+          SELECT "cupos" FROM "horarios" WHERE "id" = ${horarioId} FOR UPDATE
+        `;
+        const horario = horariosBloqueados[0];
+        if (!horario) {
+          throw new Error("Horario no encontrado");
+        }
 
-  if (citasActivas >= horario.cupos) {
-    throw new Error("No hay cupos disponibles para este horario");
+        const citasActivas = await tx.cita.count({
+          where: { horarioId, fecha: fechaCita, estado: "ACTIVA" },
+        });
+
+        if (citasActivas >= horario.cupos) {
+          const error = new Error("No hay cupos disponibles para este horario");
+          error.code = "SLOT_UNAVAILABLE";
+          throw error;
+        }
+
+        return tx.cita.create({
+          data: {
+            horarioId,
+            pacienteNombre,
+            pacienteDni,
+            pacienteTelef,
+            fecha: fechaCita,
+            estado: "ACTIVA",
+          },
+          include: citaInclude,
+        });
+      },
+      { isolationLevel: "Serializable" },
+    );
+  } catch (error) {
+    if (error.code === "P2034") {
+      const disponibilidadError = new Error(
+        "No hay cupos disponibles para este horario",
+      );
+      disponibilidadError.code = "SLOT_UNAVAILABLE";
+      throw disponibilidadError;
+    }
+    throw error;
   }
-
-  return prisma.cita.create({
-    data: {
-      horarioId,
-      pacienteNombre,
-      pacienteDni,
-      pacienteTelef,
-      fecha: fechaCita,
-      estado: "ACTIVA",
-    },
-    include: citaInclude,
-  });
 };
 
 export const obtenerTodasLasCitas = async () => {

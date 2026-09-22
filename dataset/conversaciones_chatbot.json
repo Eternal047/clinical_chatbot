@@ -1,0 +1,778 @@
+[
+  {
+    "conversation_id": "SOL-01",
+    "primary_category": "solicitar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["solicitar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Hola, necesito programar una cita para Dermatología.",
+        "expected_intent": "solicitar_cita",
+        "expected_entities": { "especialidad": "Dermatología" }
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": 2 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Valeria Cusihuamán, DNI 71538294",
+        "expected_intent": "proporcionar_datos",
+        "expected_entities": {
+          "nombre_paciente": "Valeria Cusihuamán",
+          "dni_paciente": "71538294"
+        }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "Sí, por favor confirma la cita.",
+        "expected_intent": "confirmar_cita",
+        "expected_entities": { "confirmacion": "si" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "SOL-02",
+    "primary_category": "solicitar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["solicitar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Quisiera agendar una cita de Alergología.",
+        "expected_intent": "solicitar_cita",
+        "expected_entities": { "especialidad": "Alergología" }
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "1",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": 1 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Renzo Huamán, mi DNI es 48267915.",
+        "expected_intent": "proporcionar_datos",
+        "expected_entities": {
+          "nombre_paciente": "Renzo Huamán",
+          "dni_paciente": "48267915"
+        }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "No, aún no estoy seguro de confirmar.",
+        "expected_intent": "confirmar_cita",
+        "expected_entities": { "confirmacion": "no" }
+      },
+      {
+        "turn_number": 5,
+        "turn_role": "button",
+        "user_utterance": "cambiar especialidad",
+        "expected_intent": "cambiar_especialidad",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "change_specialty_options"
+  },
+  {
+    "conversation_id": "SOL-03",
+    "primary_category": "solicitar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["solicitar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Deseo una consulta en Medicina General.",
+        "expected_intent": "solicitar_cita",
+        "expected_entities": { "especialidad": "Medicina General" }
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "3",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": 3 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Camila Rojas, 52984671",
+        "expected_intent": "proporcionar_datos",
+        "expected_entities": {
+          "nombre_paciente": "Camila Rojas",
+          "dni_paciente": "52984671"
+        }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "Está bien así, confirmo la cita.",
+        "expected_intent": "confirmar_cita",
+        "expected_entities": { "confirmacion": "si" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "SOL-04",
+    "primary_category": "solicitar_cita",
+    "subcategory": null,
+    "case_type": "interruption",
+    "border_case_type": "change_schedule",
+    "involved_categories": ["solicitar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito sacar una cita en Odontología.",
+        "expected_intent": "solicitar_cita",
+        "expected_entities": { "especialidad": "Odontología" }
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "1",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": 1 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Sebastián Quispe, DNI 69123847",
+        "expected_intent": "proporcionar_datos",
+        "expected_entities": {
+          "nombre_paciente": "Sebastián Quispe",
+          "dni_paciente": "69123847"
+        }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "No, ese horario no me conviene.",
+        "expected_intent": "confirmar_cita",
+        "expected_entities": { "confirmacion": "no" }
+      },
+      {
+        "turn_number": 5,
+        "turn_role": "button",
+        "user_utterance": "cambiar horario",
+        "expected_intent": "cambiar_horario",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 6,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": 2 }
+      }
+    ],
+    "expected_final_outcome": "new_schedule_selected"
+  },
+  {
+    "conversation_id": "SOL-05",
+    "primary_category": "solicitar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "invalid_schedule_selection",
+    "involved_categories": ["solicitar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Quisiera programar una cita de Psicología.",
+        "expected_intent": "solicitar_cita",
+        "expected_entities": { "especialidad": "Psicología" }
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "invalid",
+        "user_utterance": "la segunda opción",
+        "expected_intent": "seleccionar_medico",
+        "expected_entities": { "numero_seleccionado": null }
+      }
+    ],
+    "expected_final_outcome": "invalid_number_message"
+  },
+  {
+    "conversation_id": "CAN-01",
+    "primary_category": "cancelar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["cancelar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito cancelar una cita.",
+        "expected_intent": "cancelar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "1",
+        "expected_intent": "cancelar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 1 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Sí, procede con la cancelación.",
+        "expected_intent": "cancelar_cita - confirmar",
+        "expected_entities": { "confirmacion": "si" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "CAN-02",
+    "primary_category": "cancelar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["cancelar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "No voy a poder asistir a mi cita, quisiera cancelarla.",
+        "expected_intent": "cancelar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "cancelar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 2 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "No, mejor no la canceles.",
+        "expected_intent": "cancelar_cita - confirmar",
+        "expected_entities": { "confirmacion": "no" }
+      }
+    ],
+    "expected_final_outcome": "cancellation_rejected"
+  },
+  {
+    "conversation_id": "CAN-03",
+    "primary_category": "cancelar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "invalid_selection",
+    "involved_categories": ["cancelar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Por favor, cancela mi cita.",
+        "expected_intent": "cancelar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "invalid",
+        "user_utterance": "9",
+        "expected_intent": "cancelar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 9 }
+      }
+    ],
+    "expected_final_outcome": "invalid_number_message"
+  },
+  {
+    "conversation_id": "CAN-04",
+    "primary_category": "cancelar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "no_active_appointments",
+    "involved_categories": ["cancelar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Quisiera cancelar mi cita.",
+        "expected_intent": "cancelar_cita",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "no_active_appointments"
+  },
+  {
+    "conversation_id": "CAN-05",
+    "primary_category": "cancelar_cita",
+    "subcategory": null,
+    "case_type": "interruption",
+    "border_case_type": "expired_confirmation",
+    "involved_categories": ["cancelar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Deseo cancelar una cita.",
+        "expected_intent": "cancelar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "1",
+        "expected_intent": "cancelar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 1 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "Claro que sí.",
+        "expected_intent": "cancelar_cita - confirmar",
+        "expected_entities": { "confirmacion": "si" }
+      }
+    ],
+    "expected_final_outcome": "success_or_expired_context"
+  },
+  {
+    "conversation_id": "REP-01",
+    "primary_category": "reprogramar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["reprogramar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito reprogramar una cita.",
+        "expected_intent": "reprogramar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "reprogramar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 2 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "3",
+        "expected_intent": "reprogramar_cita - horario",
+        "expected_entities": { "numero_seleccionado": 3 }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "Sí, confirma el nuevo horario.",
+        "expected_intent": "reprogramar_cita - confirmar",
+        "expected_entities": { "confirmacion": "si" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "REP-02",
+    "primary_category": "reprogramar_cita",
+    "subcategory": null,
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["reprogramar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Podrías ayudarme a cambiar el horario de una cita?",
+        "expected_intent": "reprogramar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "1",
+        "expected_intent": "reprogramar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 1 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "reprogramar_cita - horario",
+        "expected_entities": { "numero_seleccionado": 2 }
+      },
+      {
+        "turn_number": 4,
+        "turn_role": "normal",
+        "user_utterance": "No, déjala como está.",
+        "expected_intent": "reprogramar_cita - confirmar",
+        "expected_entities": { "confirmacion": "no" }
+      }
+    ],
+    "expected_final_outcome": "reschedule_rejected"
+  },
+  {
+    "conversation_id": "REP-03",
+    "primary_category": "reprogramar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "invalid_appointment_selection",
+    "involved_categories": ["reprogramar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito cambiar mi cita a otro horario.",
+        "expected_intent": "reprogramar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "invalid",
+        "user_utterance": "8",
+        "expected_intent": "reprogramar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 8 }
+      }
+    ],
+    "expected_final_outcome": "invalid_number_message"
+  },
+  {
+    "conversation_id": "REP-04",
+    "primary_category": "reprogramar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "invalid_schedule_selection",
+    "involved_categories": ["reprogramar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Quiero reprogramar mi cita.",
+        "expected_intent": "reprogramar_cita",
+        "expected_entities": {}
+      },
+      {
+        "turn_number": 2,
+        "turn_role": "normal",
+        "user_utterance": "2",
+        "expected_intent": "reprogramar_cita - seleccionar",
+        "expected_entities": { "numero_seleccionado": 2 }
+      },
+      {
+        "turn_number": 3,
+        "turn_role": "invalid",
+        "user_utterance": "10",
+        "expected_intent": "reprogramar_cita - horario",
+        "expected_entities": { "numero_seleccionado": 10 }
+      }
+    ],
+    "expected_final_outcome": "invalid_number_message"
+  },
+  {
+    "conversation_id": "REP-05",
+    "primary_category": "reprogramar_cita",
+    "subcategory": null,
+    "case_type": "border",
+    "border_case_type": "no_active_appointments",
+    "involved_categories": ["reprogramar_cita"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "No podré asistir, necesito cambiar mi cita.",
+        "expected_intent": "reprogramar_cita",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "no_active_appointments"
+  },
+  {
+    "conversation_id": "FAQ-01",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_faq",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Ayuda, ¿qué puedo hacer a través de este WhatsApp?",
+        "expected_intent": "faq",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "FAQ-02",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_faq",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿En qué horario atienden?",
+        "expected_intent": "faq_horario",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "FAQ-03",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_faq",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿De qué forma puedo cancelar una cita?",
+        "expected_intent": "faq",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "FAQ-04",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_faq",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Es posible cambiar una cita que ya tengo agendada?",
+        "expected_intent": "faq",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "FAQ-05",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_faq",
+    "case_type": "border",
+    "border_case_type": "unknown_request",
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "fallback",
+        "user_utterance": "No entiendo qué hacer, ¿me puedes ayudar?",
+        "expected_intent": "faq",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success_or_fallback"
+  },
+  {
+    "conversation_id": "MED-01",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_medicos",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Qué doctores atienden en Dermatología?",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Dermatología" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "MED-02",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_medicos",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito la lista de médicos de Medicina General.",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Medicina General" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "MED-03",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_especialidades",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Qué médicos tienen turnos disponibles en Odontología?",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Odontología" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "MED-04",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_medicos",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Podrías decirme qué médicos están registrados en el sistema?",
+        "expected_intent": "consultar_medicos",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "MED-05",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_medicos",
+    "case_type": "border",
+    "border_case_type": "unknown_specialty",
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Hay médicos disponibles en Cardiología?",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Cardiología" }
+      }
+    ],
+    "expected_final_outcome": "no_results"
+  },
+  {
+    "conversation_id": "DIS-01",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_disponibilidad",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Qué horarios tienen libres para Dermatología?",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Dermatología" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "DIS-02",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_disponibilidad",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Quisiera saber en qué momentos atienden Alergología.",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Alergología" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "DIS-03",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_especialidades",
+    "case_type": "normal",
+    "border_case_type": null,
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Tienen algún espacio disponible para Psicología?",
+        "expected_intent": "consultar_disponibilidad",
+        "expected_entities": { "especialidad": "Psicología" }
+      }
+    ],
+    "expected_final_outcome": "success"
+  },
+  {
+    "conversation_id": "DIS-04",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_disponibilidad",
+    "case_type": "border",
+    "border_case_type": "missing_specialty",
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "Necesito ver los horarios que tienen disponibles.",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": {}
+      }
+    ],
+    "expected_final_outcome": "missing_specialty_message"
+  },
+  {
+    "conversation_id": "DIS-05",
+    "primary_category": "consultas_frecuentes",
+    "subcategory": "consultar_disponibilidad",
+    "case_type": "border",
+    "border_case_type": "unknown_specialty",
+    "involved_categories": ["consultas_frecuentes"],
+    "turns": [
+      {
+        "turn_number": 1,
+        "turn_role": "normal",
+        "user_utterance": "¿Qué horarios manejan para Cardiología?",
+        "expected_intent": "consultar_especialidades",
+        "expected_entities": { "especialidad": "Cardiología" }
+      }
+    ],
+    "expected_final_outcome": "no_results"
+  }
+]

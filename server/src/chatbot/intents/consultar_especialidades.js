@@ -1,16 +1,10 @@
 import { getAllEspecialidadesService } from "../../api/services/especialidadesService.js";
 import { mostrarMedicos } from "./solicitar_cita.js";
+import { limpiarContextos, obtenerSesion } from "../context.utils.js";
 
 const contextoBase = (queryResult) => {
-  const contexto = queryResult.outputContexts?.[0]?.name || "";
-  return contexto.includes("/contexts/") ? contexto.split("/contexts/")[0] : "";
+  return obtenerSesion(queryResult);
 };
-
-const limpiarContextos = (queryResult) =>
-  (queryResult.outputContexts || []).map((contexto) => ({
-    name: contexto.name,
-    lifespanCount: 0,
-  }));
 
 export const procesarConsultarEspecialidades = async (queryResult) => {
   const telefono = queryResult.telefonoUsuario;
@@ -31,7 +25,9 @@ export const procesarConsultarEspecialidades = async (queryResult) => {
     };
   }
 
-  const lista = especialidades.map((especialidad) => `- ${especialidad.nombre}`).join("\n");
+  const lista = especialidades
+    .map((especialidad) => `- ${especialidad.nombre}`)
+    .join("\n");
 
   return {
     text:
@@ -41,7 +37,7 @@ export const procesarConsultarEspecialidades = async (queryResult) => {
       ...limpiarContextos(queryResult),
       {
         name: `${contextoBase(queryResult)}/contexts/awaiting_especialidad_info`,
-        lifespanCount: 3,
+        lifespanCount: 5,
         parameters: { telefono },
       },
     ],

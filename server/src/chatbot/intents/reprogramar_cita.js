@@ -3,18 +3,11 @@ import {
   reprogramarCita,
 } from "../../api/services/citasService.js";
 import { obtenerHorariosDisponibles } from "../../api/services/horariosService.js";
-
-const limpiarContextos = (queryResult) =>
-  (queryResult.outputContexts || []).map((contexto) => ({
-    name: contexto.name,
-    lifespanCount: 0,
-  }));
-
-const obtenerContexto = (queryResult, nombre) => {
-  return (queryResult.outputContexts || []).find((contexto) =>
-    contexto.name.endsWith(`/contexts/${nombre}`),
-  );
-};
+import {
+  limpiarContextos,
+  obtenerContexto,
+  obtenerSesion,
+} from "../context.utils.js";
 
 const obtenerNumero = (queryResult) => {
   const numero = queryResult.parameters?.numero_seleccionado;
@@ -64,7 +57,7 @@ export const procesarReprogramarCita = async (queryResult) => {
     const lista = opciones
       .map((cita, index) => `${index + 1}. ${cita.resumen}`)
       .join("\n");
-    const baseSession = (queryResult.outputContexts?.[0]?.name || "").split("/contexts/")[0];
+    const baseSession = obtenerSesion(queryResult);
 
     return {
       text: `Tus citas activas:\n\n${lista}\n\nResponde con el numero de la cita que deseas reprogramar.`,
@@ -80,12 +73,33 @@ export const procesarReprogramarCita = async (queryResult) => {
   }
 
   if (intentName === "reprogramar_cita - seleccionar") {
-    const contexto = obtenerContexto(queryResult, "awaiting_reprogramacion_seleccion");
-    const citas = JSON.parse(contexto?.parameters?.citas || "[]");
+    const contexto = obtenerContexto(
+      queryResult,
+      "awaiting_reprogramacion_seleccion",
+    );
+    if (!contexto) {
+      return {
+        text: "La seleccion de cita expiro. Inicia nuevamente la reprogramacion.",
+        contexts: [],
+      };
+    }
+
+    let citas;
+    try {
+      citas = JSON.parse(contexto.parameters?.citas || "[]");
+    } catch {
+      return {
+        text: "No pude recuperar tus citas. Inicia nuevamente la reprogramacion.",
+        contexts: [],
+      };
+    }
     const numero = obtenerNumero(queryResult);
 
     if (!numero || numero < 1 || numero > citas.length) {
-      return { text: "Numero invalido. Elige un numero de la lista.", contexts: queryResult.outputContexts || [] };
+      return {
+        text: "Numero invalido. Elige un numero de la lista.",
+        contexts: queryResult.outputContexts || [],
+      };
     }
 
     const cita = citas[numero - 1];
@@ -101,7 +115,10 @@ export const procesarReprogramarCita = async (queryResult) => {
     }
 
     const lista = horarios
-      .map((horario, index) => `${index + 1}. ${horario.diaSemana} ${horario.horaInicio}-${horario.horaFin}`)
+      .map(
+        (horario, index) =>
+          `${index + 1}. ${horario.diaSemana} ${horario.horaInicio}-${horario.horaFin}`,
+      )
       .join("\n");
     const baseSession = contexto.name.split("/contexts/")[0];
 
@@ -112,19 +129,44 @@ export const procesarReprogramarCita = async (queryResult) => {
         {
           name: `${baseSession}/contexts/awaiting_reprogramacion_horario`,
           lifespanCount: 5,
-          parameters: { citaId: cita.id, horarios: JSON.stringify(horarios), telefono },
+          parameters: {
+            citaId: cita.id,
+            horarios: JSON.stringify(horarios),
+            telefono,
+          },
         },
       ],
     };
   }
 
   if (intentName === "reprogramar_cita - horario") {
-    const contexto = obtenerContexto(queryResult, "awaiting_reprogramacion_horario");
-    const horarios = JSON.parse(contexto?.parameters?.horarios || "[]");
+    const contexto = obtenerContexto(
+      queryResult,
+      "awaiting_reprogramacion_horario",
+    );
+    if (!contexto) {
+      return {
+        text: "La seleccion de horario expiro. Inicia nuevamente la reprogramacion.",
+        contexts: [],
+      };
+    }
+
+    let horarios;
+    try {
+      horarios = JSON.parse(contexto.parameters?.horarios || "[]");
+    } catch {
+      return {
+        text: "No pude recuperar los horarios. Inicia nuevamente la reprogramacion.",
+        contexts: [],
+      };
+    }
     const numero = obtenerNumero(queryResult);
 
     if (!numero || numero < 1 || numero > horarios.length) {
-      return { text: "Numero invalido. Elige un numero de la lista.", contexts: queryResult.outputContexts || [] };
+      return {
+        text: "Numero invalido. Elige un numero de la lista.",
+        contexts: queryResult.outputContexts || [],
+      };
     }
 
     const horario = horarios[numero - 1];
@@ -137,7 +179,7 @@ export const procesarReprogramarCita = async (queryResult) => {
         { name: contexto.name, lifespanCount: 0 },
         {
           name: `${baseSession}/contexts/awaiting_reprogramacion_confirmacion`,
-          lifespanCount: 3,
+          lifespanCount: 5,
           parameters: {
             citaId: contexto.parameters.citaId,
             nuevoHorarioId: horario.id,
@@ -150,15 +192,37 @@ export const procesarReprogramarCita = async (queryResult) => {
   }
 
   if (intentName === "reprogramar_cita - confirmar") {
-    const confirmacion = normalizarConfirmacion(queryResult.parameters?.confirmacion);
-    const contexto = obtenerContexto(queryResult, "awaiting_reprogramacion_confirmacion");
+    const confirmacion = normalizarConfirmacion(
+      queryResult.parameters?.confirmacion,
+    );
+    const contexto = obtenerContexto(
+      queryResult,
+      "awaiting_reprogramacion_confirmacion",
+    );
+
+    if (
+      !contexto?.parameters?.citaId ||
+      !contexto?.parameters?.nuevoHorarioId ||
+      !contexto?.parameters?.resumen
+    ) {
+      return {
+        text: "La confirmacion de reprogramacion expiro. Inicia nuevamente.",
+        contexts: [],
+      };
+    }
 
     if (confirmacion !== "si") {
-      return { text: "Reprogramacion cancelada. Necesitas algo mas?", contexts: limpiarContextos(queryResult) };
+      return {
+        text: "Reprogramacion cancelada. Necesitas algo mas?",
+        contexts: limpiarContextos(queryResult),
+      };
     }
 
     try {
-      await reprogramarCita(contexto?.parameters?.citaId, contexto?.parameters?.nuevoHorarioId);
+      await reprogramarCita(
+        contexto?.parameters?.citaId,
+        contexto?.parameters?.nuevoHorarioId,
+      );
       return {
         text: `Cita reprogramada con exito. Nuevo horario: ${contexto?.parameters?.resumen}`,
         contexts: limpiarContextos(queryResult),
@@ -172,5 +236,8 @@ export const procesarReprogramarCita = async (queryResult) => {
     }
   }
 
-  return { text: "No pude procesar la reprogramacion.", contexts: limpiarContextos(queryResult) };
+  return {
+    text: "No pude procesar la reprogramacion.",
+    contexts: limpiarContextos(queryResult),
+  };
 };
