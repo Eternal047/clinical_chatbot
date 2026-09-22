@@ -38,16 +38,15 @@ const intentHandlers = {
  * Ejemplo: "whatsapp:+51961219063" → "961219063"
  */
 const extraerTelefonoDeSession = (session) => {
-  const parts = session.split("/");
-  const raw = parts[parts.length - 1]; // ej: "whatsapp:+51961219063" o un UUID de prueba
+  const raw = String(session || "").split("/").at(-1);
+  const match = raw.match(/^wa_(\d{7,15})$/);
 
   // Si no viene en formato whatsapp:+..., es una sesión de prueba (consola de Dialogflow)
-  if (!raw.startsWith("whatsapp:")) {
-    return "+51999999999"; // numero default para pruebas en consola
+  if (match) {
+    return `+${match[1]}`;
   }
 
-  const telefono = raw.replace("whatsapp:", ""); // "+51961219063"
-  return telefono; // ya viene con el +, no hace falta tocarlo más
+  return "+51999999999";
 };
 
 export const handleWebhook = async (req, res) => {

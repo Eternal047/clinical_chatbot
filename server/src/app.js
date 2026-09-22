@@ -7,13 +7,22 @@ import horariosRoutes from "./api/routes/horariosRoutes.js";
 import medicosRoutes from "./api/routes/medicosRoutes.js";
 import pacientesRoutes from "./api/routes/pacientesRoutes.js";
 import especialidadesRoutes from "./api/routes/especialidadesRoutes.js";
-import { handleIncomingMessage } from './chatbot/twilio.service.js';
 import { handleWebhook } from "./chatbot/webhook.controller.js";
+import {
+  handleMetaWebhook,
+  verifyMetaWebhook,
+} from "./chatbot/meta-webhook.controller.js";
 const app = express();
+
+const guardarCuerpoCrudo = (req, res, buffer) => {
+  if (req.originalUrl?.split("?")[0] === "/whatsapp") {
+    req.rawBody = Buffer.from(buffer);
+  }
+};
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ verify: guardarCuerpoCrudo }));
 app.use(express.urlencoded({ extended: true }));
 
 // Health check
@@ -29,8 +38,12 @@ app.use("/api/medicos", medicosRoutes);
 app.use("/api/pacientes", pacientesRoutes);
 app.use("/api/especialidades", especialidadesRoutes);
 
-app.post("/chatbot/whatsapp", handleIncomingMessage); // Ruta específica para Twilio
-app.post("/chatbot/webhook", handleWebhook);           
+// Meta usa la misma URL para verificar el webhook (GET) y recibir eventos (POST).
+app.get("/whatsapp", verifyMetaWebhook);
+app.post("/whatsapp", handleMetaWebhook);
+
+// Fulfillment llamado por Dialogflow ES; no es el webhook de Meta.
+app.post("/chatbot/webhook", handleWebhook);
 
 // 404 Handler
 app.use((req, res) => {

@@ -6,9 +6,11 @@ dotenv.config();
 const requiredVars = [
   "DATABASE_URL",
   "GOOGLE_CREDENTIALS_JSON",
-  "TWILIO_ACCOUNT_SID",
-  "TWILIO_AUTH_TOKEN",
-  "TWILIO_WHATSAPP_NUMBER",
+  "META_VERIFY_TOKEN",
+  "META_APP_SECRET",
+  "META_WHATSAPP_ACCESS_TOKEN",
+  "META_WHATSAPP_PHONE_NUMBER_ID",
+  "META_GRAPH_API_VERSION",
   "JWT_SECRET",
 ];
 
@@ -28,10 +30,12 @@ const config = {
   database: {
     url: process.env.DATABASE_URL,
   },
-  twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    whatsappNumber: process.env.TWILIO_WHATSAPP_NUMBER,
+  metaWhatsApp: {
+    verifyToken: process.env.META_VERIFY_TOKEN,
+    appSecret: process.env.META_APP_SECRET,
+    accessToken: process.env.META_WHATSAPP_ACCESS_TOKEN,
+    phoneNumberId: process.env.META_WHATSAPP_PHONE_NUMBER_ID,
+    graphApiVersion: process.env.META_GRAPH_API_VERSION,
   },
   jwt: {
     secret: process.env.JWT_SECRET,
